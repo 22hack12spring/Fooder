@@ -8,6 +8,11 @@ services:
       - "8080:8080"
     volumes:
       - ./app:/go/src/app
+    environment:
+      DB_HOSTNAME: mysql
+      DB_USERNAME: user
+      DB_PASSWORD: password
+      DB_DATABASE: db_22spring
     depends_on:
       - mysql
   
@@ -18,7 +23,10 @@ services:
       - ./mysql/init:/docker-entrypoint-initdb.d
       - ./mysql/data:/var/lib/mysql
     environment:
-      - MYSQL_ROOT_PASSWORD=pass
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: db_22spring
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
     ports:
       - "3306:3306"
     container_name: mysql

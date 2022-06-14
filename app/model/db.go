@@ -1,0 +1,42 @@
+package model
+
+import (
+	"os"
+	"fmt"
+	
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
+)
+
+var (
+	db *sqlx.DB
+)
+
+func EstablishConnection() (*sqlx.DB, error) {
+	user := os.Getenv("DB_USERNAME")
+	if user == "" {
+		user = "root"
+	}
+
+	pass := os.Getenv("DB_PASSWORD")
+	if pass == "" {
+		pass = "pass"
+	}
+
+	host := os.Getenv("DB_HOSTNAME")
+	if host == "" {
+		host = "localhost"
+	}
+
+	dbname := os.Getenv("DB_DATABASE")
+	if dbname == "" {
+		dbname = "db_22spring"
+	}
+
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s", user, pass, host, dbname)
+	dsn += "?parseTime=True&loc=Asia%2FTokyo&charset=utf8mb4"
+	_db, err := sqlx.Open("mysql", dsn)
+	db = _db
+
+	return db, err
+}
