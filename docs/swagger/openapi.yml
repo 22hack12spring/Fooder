@@ -1,0 +1,223 @@
+openapi: 3.0.0
+info:
+  title: hack22spring-api
+  version: 1.0.0
+  contact:
+    name: hack22spring-api
+    url: https://github.com/22hack12spring
+  description: hack22spring-api
+servers:
+  - url: http://localhost:8080/api/v1/
+    description: local
+tags:
+  - name: gourmet
+paths:
+  /gourmet/start:
+    post:
+      tags:
+        - gourmet
+      description: 検索スタート
+      summary: 検索スタート
+      operationId: postGourmetStart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GourmetStartRequest'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GourmetStartResponse'
+        400:
+          description: パラメータ不正(緯度経度または駅名のどちらかが必要)
+        404:
+          description: 駅名が見つからない
+        500:
+          description: Internal Server Error
+  /gourmet/answer:
+    description: お店検索の結果を取得する
+    post:
+      tags:
+        - gourmet
+      description: 検索結果取得
+      summary: 検索結果取得
+      operationId: postGourmetAnswer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GourmetAnswerRequest'
+      responses:
+        200:
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GourmetAnswerResponse'
+        400:
+          description: パラメータ不正
+        500:
+          description: Internal Server Error
+components:
+  schemas:
+    GourmetStartRequest:
+      type: object
+      properties:
+        lat:
+          type: number
+          description: 緯度
+        lng:
+          type: number
+          description: 経度
+        station:
+          type: string
+          description: 駅名
+    GourmetStartResponse:
+      type: object
+      properties:
+        id: 
+          type: string
+          format: uuid
+          description: uuid(一連の検索に紐づく)
+        questions:
+          type: array
+          description: 質問
+          items:
+            $ref: '#/components/schemas/GourmetQuestion'
+      required:
+        - id
+        - questions
+    GourmetQuestion:
+      type: object
+      properties:
+        id:
+          type: number
+          description: 1~7までの質問連番
+        image:
+          type: string
+          description: 画像URL
+        genre:
+          type: string
+          description: ジャンル
+        subgenre:
+          type: string
+          description: サブジャンル
+        price:
+          type: string
+          description: 価格帯
+      required:
+        - id
+        - image
+        - genre
+        - subgenre
+        - price
+    GourmetAnswerRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: uuid(一連の検索に紐づく)
+        answer:
+          type: array
+          description: 回答
+          items:
+            $ref: '#/components/schemas/GourmetAnswer'
+      required:
+        - id
+        - answer
+    GourmetAnswer:
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 1
+          maximum: 7
+          description: 1~7までの質問連番
+        answer:
+          type: string
+          description: 回答(yes or no)
+      required:
+        - id
+        - answer
+    GourmetAnswerResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: uuid(一連の検索に紐づく)
+        shop:
+          type: object
+          description: お店情報
+          $ref: '#/components/schemas/GourmetShop'
+      required:
+        - id
+        - shop
+    GourmetShop:
+      type: object
+      properties:
+        id:
+          type: string
+          description: uuid(HotpepperAPIのお店ID)
+        name:
+          type: string
+          description: お店名
+        address:
+          type: string
+          description: 住所
+        logoImage:
+          type: string
+          description: ロゴ画像URL
+        lat:
+          type: number
+          description: 緯度
+        lng:
+          type: number
+          description: 経度
+        genre:
+          type: string
+          description: ジャンル
+        subgenre:
+          type: string
+          description: サブジャンル
+        price:
+          type: string
+          description: 価格帯
+        open:
+          type: string
+          description: 営業時間
+        close:
+          type: string
+          description: 閉店時間/休業日
+        url:
+          type: string
+          description: お店のホットペッパーURL
+        photo:
+          type: string
+          description: 画像URL
+        lunch:
+          type: string
+          description: 昼営業についての説明
+      required:
+        - id
+        - name
+        - address
+        - logoImage
+        - lat
+        - lng
+        - genre
+        - subgenre
+        - price
+        - open
+        - close
+        - url
+        - photo
+        - lunch
+
+        
+
+        
