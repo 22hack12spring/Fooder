@@ -12,10 +12,12 @@ type Handlers struct {
 }
 
 func (h *Handlers) SetRouting(e *echo.Echo) error {
-	api := e.Group("/api")
+	api := e.Group("/api/v1")
+	gourmet := api.Group("/gourmet")
 	{
-		api.GET("/ping", h.Ping)
+		gourmet.POST("/start", h.PostGourmetStart)
+		gourmet.POST("/answer", h.PostGourmetAnswer)
 	}
-
+	api.GET("/ping", h.Ping)
 	return nil
 }
