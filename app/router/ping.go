@@ -8,7 +8,7 @@ import (
 )
 
 // /api/ping
-func Ping(c echo.Context) error {
+func (h *Handlers) Ping(c echo.Context) error {
 	log.Println("ping recieved")
 	return c.String(http.StatusOK, "pong")
 }

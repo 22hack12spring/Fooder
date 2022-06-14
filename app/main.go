@@ -27,7 +27,12 @@ func main() {
 
 	e := echo.New()
 
-	err = router.SetRouting(e)
+	repo := model.NewSqlxRepository(db)
+	handlers := router.Handlers{
+		Repo: repo,
+	}
+
+	err = handlers.SetRouting(e)
 
 	if err != nil {
 		log.Fatal(err)
