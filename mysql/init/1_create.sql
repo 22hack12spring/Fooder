@@ -1,2 +1,3 @@
+DROP DATABASE IF EXISTS db_22spring;
 CREATE DATABASE db_22spring;
 USE db_22spring;
