@@ -60,7 +60,11 @@ func (repo *SqlxRepository) CreateSearch(arg SearchArgs) (error, Searches) {
 	}
 
 	sql := "INSERT INTO searches (id, station, lat, lng) VALUE (?, ?, ?, ?)"
-	repo.db.Exec(sql, search.ID, search.Station, search.Lat, search.Lng)
+	_, err = repo.db.Exec(sql, search.ID, search.Station, search.Lat, search.Lng)
+
+	if err != nil {
+		return err, Searches{}
+	}
 
 	return nil, *search
 }
