@@ -2,9 +2,11 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/22hack12spring/backend/model"
 	"github.com/22hack12spring/backend/router"
+	"github.com/22hack12spring/backend/service"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
@@ -27,11 +29,25 @@ func main() {
 
 	e := echo.New()
 
-	err = router.SetRouting(e)
+	repo := model.NewSqlxRepository(db)
+	services, err := service.NewServices(repo)
+	if err != nil {
+		panic(err)
+	}
+	handlers := router.Handlers{
+		Repo:    repo,
+		Service: services,
+	}
+
+	err = handlers.SetRouting(e)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	e.Logger.Fatal(e.Start(":8080"))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	e.Logger.Fatal(e.Start(":" + port))
 }
