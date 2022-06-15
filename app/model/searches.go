@@ -2,8 +2,8 @@ package model
 
 import "database/sql"
 
-type SearchsRepository interface {
-	CreateSearch(arg SearchArgs) (error, Searchs)
+type SearchesRepository interface {
+	CreateSearch(arg SearchArgs) (error, Searches)
 }
 
 type SearchArgs struct {
@@ -12,7 +12,7 @@ type SearchArgs struct {
 	Lng     *float64
 }
 
-type Searchs struct {
+type Searches struct {
 	ID        string          `db:"id"`
 	Station   sql.NullString  `db:"station"`
 	Lat       sql.NullFloat64 `db:"lat"`
@@ -20,8 +20,8 @@ type Searchs struct {
 	CreatedAt string          `db:"created_at"`
 }
 
-// CreateSearch　uuidを発行して、Searchsテーブルにデータを追加する
-func (repo *SqlxRepository) CreateSearch(arg SearchArgs) (error, Searchs) {
+// CreateSearch　uuidを発行して、Searchesテーブルにデータを追加する
+func (repo *SqlxRepository) CreateSearch(arg SearchArgs) (error, Searches) {
 	// implement here
-	return nil, Searchs{}
+	return nil, Searches{}
 }
