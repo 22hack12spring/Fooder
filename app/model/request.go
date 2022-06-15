@@ -10,11 +10,11 @@ import (
 )
 
 type GourmetsRequest interface {
-	GetGourmetsRaw(args SearchArgs) (string, error)
+	GetGourmetsRawAPI(args SearchArgs) (string, error)
 }
 
 // APIリクエストを送って、グルメ一覧(json)のデータを取得する
-func (repo *SqlxRepository) GetGourmetsRaw(args SearchArgs) (string, error) {
+func (repo *SqlxRepository) GetGourmetsRawAPI(args SearchArgs) (string, error) {
 	baseurl := "https://webservice.recruit.co.jp/hotpepper/gourmet/v1/"
 
 	request, err := http.NewRequest("GET", baseurl, nil)
@@ -32,12 +32,14 @@ func (repo *SqlxRepository) GetGourmetsRaw(args SearchArgs) (string, error) {
 	// TODO: 現状だとキーワード検索なので、small_area検索に変更したい
 	if args.Station != nil {
 		params.Add("keyword", *args.Station)
-	}
-	if args.Lat != nil && args.Lng != nil {
+	} else if args.Lat != nil && args.Lng != nil {
 		params.Add("lat", fmt.Sprintf("%f", *args.Lat))
 		params.Add("lng", fmt.Sprintf("%f", *args.Lng))
 		// 1000m以内
 		params.Add("range", "3")
+	} else {
+		// error
+		return "", errors.New(fmt.Sprintf("Error: %s", "Invalid args"))
 	}
 	params.Add("format", "json")
 
