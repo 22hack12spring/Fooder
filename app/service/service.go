@@ -3,6 +3,8 @@ package service
 import "github.com/22hack12spring/backend/model"
 
 type Service interface {
+	GenerateRecommend(uuid string, answers []Answer) (*ShopDetail, error)
+	GenerateQuestions() ([]*ShopData, error)
 }
 
 type Services struct {
