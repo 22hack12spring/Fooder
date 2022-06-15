@@ -4,6 +4,7 @@ import "github.com/jmoiron/sqlx"
 
 type Repository interface {
 	GenresRepository
+	SearchsRepository
 }
 
 type SqlxRepository struct {

@@ -6,7 +6,7 @@ import (
 
 	"github.com/22hack12spring/backend/model"
 	"github.com/22hack12spring/backend/router"
-	service "github.com/22hack12spring/backend/services"
+	"github.com/22hack12spring/backend/service"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"

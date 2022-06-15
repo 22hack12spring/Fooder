@@ -2,7 +2,7 @@ package router
 
 import (
 	"github.com/22hack12spring/backend/model"
-	service "github.com/22hack12spring/backend/services"
+	"github.com/22hack12spring/backend/service"
 	"github.com/labstack/echo/v4"
 )
 
