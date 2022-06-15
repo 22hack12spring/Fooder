@@ -8,10 +8,6 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-var (
-	db *sqlx.DB
-)
-
 func EstablishConnection() (*sqlx.DB, error) {
 	user := os.Getenv("DB_USERNAME")
 	if user == "" {
@@ -35,8 +31,7 @@ func EstablishConnection() (*sqlx.DB, error) {
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s", user, pass, host, dbname)
 	dsn += "?parseTime=True&loc=Asia%2FTokyo&charset=utf8mb4"
-	_db, err := sqlx.Open("mysql", dsn)
-	db = _db
+	db, err := sqlx.Open("mysql", dsn)
 
 	return db, err
 }
