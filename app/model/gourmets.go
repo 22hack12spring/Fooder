@@ -12,6 +12,7 @@ type GourmetsRepository interface {
 	InsertGourmetsCache(ctx context.Context, args SearchArgs, gourmetsRaw string) error
 	GetGourmetsCache(ctx context.Context, args SearchArgs) (Gourmets, error)
 	ParseGourmetsJSON(raw string) (GourmetsDetail, error)
+	DeleteOldGourmets(ctx context.Context) error
 }
 
 type Gourmets struct {
@@ -132,4 +133,12 @@ func (repo *SqlxRepository) ParseGourmetsJSON(raw string) (GourmetsDetail, error
 		return GourmetsDetail{}, err
 	}
 	return gourmetsDetail.Result, nil
+}
+
+func (repo *SqlxRepository) DeleteOldGourmets(ctx context.Context) error {
+	_, err := repo.db.ExecContext(ctx, "DELETE FROM gourmets WHERE created_at < NOW() - INTERVAL 1 DAY")
+	if err != nil {
+		return err
+	}
+	return nil
 }
