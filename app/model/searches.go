@@ -8,6 +8,7 @@ import (
 
 type SearchesRepository interface {
 	CreateSearch(arg SearchArgs) (error, Searches)
+	GetSearch(id string) (error, Searches)
 }
 
 type SearchArgs struct {
