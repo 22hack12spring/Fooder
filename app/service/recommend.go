@@ -2,7 +2,7 @@ package service
 
 // TODO: たぶん、jsonのやつも書いたほうが良い↓
 type ShopDetail struct {
-	Id        int `json:"id"`
+	Id        string `json:"id"`
 	Name      string
 	LogoImage string
 	Address   string
