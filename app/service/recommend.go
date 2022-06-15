@@ -16,6 +16,7 @@ type ShopDetail struct {
 	Lat       float64
 	Lng       float64
 	Genre     []string
+	Budget    string
 	Open      string
 	Close     string
 	Url       string
@@ -37,6 +38,19 @@ func (s *Services) GenerateRecommend(ctx context.Context, uuid string, answers [
 	if err != nil {
 		return nil, err
 	}
-	result := rand.Intn(len(shops))
-	return &shops[result], nil
+	// 類似度の高いものからランダムに返す
+	vec3s, err := ShopsToShopParams(shops)
+	if err != nil {
+		return nil, err
+	}
+	// 中華が食べたい、お金のない人
+	query := [3]float64{0.7, 0.7, -0.5}
+	num := 7
+	if len(vec3s) < num {
+		num = len(vec3s)
+	}
+	similarShops := FindSimilarVec3(vec3s, query, num)
+
+	result := rand.Intn(len(similarShops))
+	return similarShops[result].Shop, nil
 }
