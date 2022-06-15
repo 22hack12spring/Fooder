@@ -3,13 +3,13 @@ package model
 import "database/sql"
 
 type SearchsRepository interface {
-	CreateSearch(arg CreateSearchArgs) (error, Searchs)
+	CreateSearch(arg SearchArgs) (error, Searchs)
 }
 
-type CreateSearchArgs struct {
-	station *string
-	lat     *float64
-	lng     *float64
+type SearchArgs struct {
+	Station *string
+	Lat     *float64
+	Lng     *float64
 }
 
 type Searchs struct {
@@ -21,7 +21,7 @@ type Searchs struct {
 }
 
 // CreateSearch　uuidを発行して、Searchsテーブルにデータを追加する
-func (repo *SqlxRepository) CreateSearch(arg CreateSearchArgs) (error, Searchs) {
+func (repo *SqlxRepository) CreateSearch(arg SearchArgs) (error, Searchs) {
 	// implement here
 	return nil, Searchs{}
 }

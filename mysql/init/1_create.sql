@@ -44,7 +44,7 @@ CREATE TABLE `questions` (
 );
 
 CREATE TABLE `gourmets` (
-    `id` INT PRIMARY KEY,
+    `id` INT PRIMARY KEY AUTO_INCREMENT,
     `station` VARCHAR(100) DEFAULT NULL,
     `lat` DOUBLE(9, 6) DEFAULT NULL,
     `lng` DOUBLE(9, 6) DEFAULT NULL,
