@@ -7,8 +7,8 @@ import (
 )
 
 type SearchesRepository interface {
-	CreateSearch(arg SearchArgs) (error, Searches)
-	GetSearch(id string) (error, Searches)
+	CreateSearch(arg SearchArgs) (Searches, error)
+	GetSearch(id string) (Searches, error)
 }
 
 type SearchArgs struct {
@@ -26,11 +26,11 @@ type Searches struct {
 }
 
 // CreateSearch　uuidを発行して、Searchesテーブルにデータを追加する
-func (repo *SqlxRepository) CreateSearch(arg SearchArgs) (error, Searches) {
+func (repo *SqlxRepository) CreateSearch(arg SearchArgs) (Searches, error) {
 	u, err := uuid.NewRandom()
 
 	if err != nil {
-		return err, Searches{}
+		return Searches{}, err
 	}
 
 	var station sql.NullString
@@ -64,14 +64,14 @@ func (repo *SqlxRepository) CreateSearch(arg SearchArgs) (error, Searches) {
 	_, err = repo.db.Exec(sql, search.ID, search.Station, search.Lat, search.Lng)
 
 	if err != nil {
-		return err, Searches{}
+		return Searches{}, err
 	}
 
-	return nil, *search
+	return *search, nil
 }
 
 // GetSearch  該当する id の Searches を検索
-func (repo *SqlxRepository) GetSearch(id string) (error, Searches) {
+func (repo *SqlxRepository) GetSearch(id string) (Searches, error) {
 	sql := "SELECT * FROM searches WHERE id = ?"
 	row := repo.db.QueryRow(sql, id)  
 	
@@ -80,8 +80,8 @@ func (repo *SqlxRepository) GetSearch(id string) (error, Searches) {
 	err := row.Scan(&s.ID, &s.Station, &s.Lat, &s.Lng, &s.CreatedAt)
 
 	if err != nil {
-		return err, Searches{}
+		return Searches{}, err
 	}
 
-	return nil, s
+	return s, nil
 }
