@@ -68,3 +68,19 @@ func (repo *SqlxRepository) CreateSearch(arg SearchArgs) (error, Searches) {
 
 	return nil, *search
 }
+
+// GetSearch  該当する id の Searches を検索
+func (repo *SqlxRepository) GetSearch(id string) (error, Searches) {
+	sql := "SELECT * FROM searches WHERE id = ?"
+	row := repo.db.QueryRow(sql, id)  
+	
+	var s Searches
+
+	err := row.Scan(&s.ID, &s.Station, &s.Lat, &s.Lng, &s.CreatedAt)
+
+	if err != nil {
+		return err, Searches{}
+	}
+
+	return nil, s
+}
