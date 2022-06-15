@@ -19,8 +19,19 @@ type GourmetAnswerRequest struct {
 }
 
 func (h *Handlers) PostGourmetStart(c echo.Context) error {
-	// TODO: implement
-	return c.String(http.StatusOK, "start")
+	var param GourmetStartRequest
+	if err := c.Bind(&param); err != nil {
+		return err
+	}
+	// check param
+	if (param.Lat == 0 || param.Lng == 0) && param.Station == "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid param")
+	}
+	questions, err := h.Service.GenerateQuestions(c.Request().Context(), param.Station, param.Lat, param.Lng)
+	if err != nil {
+		return err
+	}
+	return c.JSON(http.StatusOK, questions)
 }
 
 func (h *Handlers) PostGourmetAnswer(c echo.Context) error {
