@@ -18,6 +18,7 @@ type GourmetAnswerRequest struct {
 	Answers []service.Answer `json:"answers"`
 }
 
+// API:POST /gourmet/start
 func (h *Handlers) PostGourmetStart(c echo.Context) error {
 	var param GourmetStartRequest
 	if err := c.Bind(&param); err != nil {
@@ -27,6 +28,9 @@ func (h *Handlers) PostGourmetStart(c echo.Context) error {
 	if (param.Lat == 0 || param.Lng == 0) && param.Station == "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid param")
 	}
+	// uuidの生成とデータベースへの登録
+
+	// 質問の生成
 	questions, err := h.Service.GenerateQuestions(c.Request().Context(), param.Station, param.Lat, param.Lng)
 	if err != nil {
 		return err
@@ -34,6 +38,7 @@ func (h *Handlers) PostGourmetStart(c echo.Context) error {
 	return c.JSON(http.StatusOK, questions)
 }
 
+// API:POST /gourmet/answer
 func (h *Handlers) PostGourmetAnswer(c echo.Context) error {
 	var param GourmetAnswerRequest
 	if err := c.Bind(&param); err != nil {
