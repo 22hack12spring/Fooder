@@ -41,7 +41,7 @@ func (repo *SqlxRepository) GetGourmetsRawAPI(args SearchArgs) (string, error) {
 		// error
 		return "", errors.New(fmt.Sprintf("Error: %s", "Invalid args"))
 	}
-	params.Add("count", "100")
+	params.Add("count", "50")
 	params.Add("format", "json")
 
 	request.URL.RawQuery = params.Encode()
