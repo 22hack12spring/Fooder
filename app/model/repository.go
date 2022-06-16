@@ -5,7 +5,7 @@ import "github.com/jmoiron/sqlx"
 type Repository interface {
 	GenresRepository
 	PricesRepository
-	SearchsRepository
+	SearchesRepository
 	GourmetsRepository
 	GourmetsRequest
 }
