@@ -3,6 +3,7 @@ package router
 import (
 	"net/http"
 
+	"github.com/22hack12spring/backend/model"
 	"github.com/22hack12spring/backend/service"
 	"github.com/labstack/echo/v4"
 )
@@ -11,6 +12,11 @@ type GourmetStartRequest struct {
 	Lat     float64 `json:"lat"`
 	Lng     float64 `json:"lng" validate:"required_with=Lat"`
 	Station string  `json:"station" validate:"required_without=Lat Lng"`
+}
+
+type GourmetStartResponse struct {
+	ID        string              `json:"id"`
+	Questions []*service.ShopData `json:"questions"`
 }
 
 type GourmetAnswerRequest struct {
@@ -25,14 +31,23 @@ func (h *Handlers) PostGourmetStart(c echo.Context) error {
 	if err != nil {
 		return err
 	}
+	arg := model.ToSearchArgs(param.Lat, param.Lng, param.Station)
+
 	// uuidの生成とデータベースへの登録
+	searches, err := h.Repo.CreateSearch(c.Request().Context(), arg)
+	if err != nil {
+		return err
+	}
 
 	// 質問の生成
 	questions, err := h.Service.GenerateQuestions(c.Request().Context(), param.Station, param.Lat, param.Lng)
 	if err != nil {
 		return err
 	}
-	return c.JSON(http.StatusOK, questions)
+	return c.JSON(http.StatusOK, GourmetStartResponse{
+		ID:        searches.ID,
+		Questions: questions,
+	})
 }
 
 // API:POST /gourmet/answer

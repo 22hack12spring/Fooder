@@ -1,14 +1,15 @@
 package model
 
 import (
+	"context"
 	"database/sql"
 
 	"github.com/google/uuid"
 )
 
 type SearchesRepository interface {
-	CreateSearch(arg SearchArgs) (Searches, error)
-	GetSearch(id string) (Searches, error)
+	CreateSearch(c context.Context, arg SearchArgs) (Searches, error)
+	GetSearch(c context.Context, id string) (Searches, error)
 }
 
 type SearchArgs struct {
@@ -26,7 +27,7 @@ type Searches struct {
 }
 
 // CreateSearch　uuidを発行して、Searchesテーブルにデータを追加する
-func (repo *SqlxRepository) CreateSearch(arg SearchArgs) (Searches, error) {
+func (repo *SqlxRepository) CreateSearch(c context.Context, arg SearchArgs) (Searches, error) {
 	u, err := uuid.NewRandom()
 
 	if err != nil {
@@ -54,10 +55,10 @@ func (repo *SqlxRepository) CreateSearch(arg SearchArgs) (Searches, error) {
 	}
 
 	search := &Searches{
-		ID: u.String(),
+		ID:      u.String(),
 		Station: station,
-		Lat: lat,
-		Lng: lng,
+		Lat:     lat,
+		Lng:     lng,
 	}
 
 	sql := "INSERT INTO searches (id, station, lat, lng) VALUE (?, ?, ?, ?)"
@@ -71,10 +72,10 @@ func (repo *SqlxRepository) CreateSearch(arg SearchArgs) (Searches, error) {
 }
 
 // GetSearch  該当する id の Searches を検索
-func (repo *SqlxRepository) GetSearch(id string) (Searches, error) {
+func (repo *SqlxRepository) GetSearch(c context.Context, id string) (Searches, error) {
 	sql := "SELECT * FROM searches WHERE id = ?"
-	row := repo.db.QueryRow(sql, id)  
-	
+	row := repo.db.QueryRow(sql, id)
+
 	var s Searches
 
 	err := row.Scan(&s.ID, &s.Station, &s.Lat, &s.Lng, &s.CreatedAt)
@@ -84,4 +85,18 @@ func (repo *SqlxRepository) GetSearch(id string) (Searches, error) {
 	}
 
 	return s, nil
+}
+
+func ToSearchArgs(lat float64, lng float64, station string) SearchArgs {
+	res := SearchArgs{}
+	if lat != 0 {
+		res.Lat = &lat
+	}
+	if lng != 0 {
+		res.Lng = &lng
+	}
+	if station != "" {
+		res.Station = &station
+	}
+	return res
 }
