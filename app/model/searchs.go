@@ -1,9 +1,13 @@
 package model
 
-import "database/sql"
+import (
+	"context"
+	"database/sql"
+)
 
 type SearchsRepository interface {
 	CreateSearch(arg SearchArgs) (error, Searchs)
+	DeleteOldSearches(ctx context.Context) error
 }
 
 type SearchArgs struct {
@@ -24,4 +28,13 @@ type Searchs struct {
 func (repo *SqlxRepository) CreateSearch(arg SearchArgs) (error, Searchs) {
 	// implement here
 	return nil, Searchs{}
+}
+
+//古いSearchの削除
+func (repo *SqlxRepository) DeleteOldSearches(ctx context.Context) error {
+	_, err := repo.db.ExecContext(ctx, "DELETE FROM searchs WHERE created_at < NOW() - INTERVAL 1 DAY")
+	if err != nil {
+		return err
+	}
+	return nil
 }
