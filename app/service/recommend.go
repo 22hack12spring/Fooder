@@ -42,7 +42,7 @@ func (s *Services) GenerateRecommend(ctx context.Context, uuid string, answers [
 	if err != nil {
 		return nil, err
 	}
-	// 中華が食べたい、お金のない人
+	// mock 中華が食べたい、お金のない人
 	query := [3]float64{0.7, 0.7, -0.5}
 	num := 7
 	if len(vec3s) < num {
