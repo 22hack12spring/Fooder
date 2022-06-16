@@ -2,7 +2,7 @@ package model
 
 type ShopsRepository interface {
 	GetShops() ([]Shops, error)
-	GetShopsOfQuestion(id string) ([7]Shops, error)
+	GetShopsBySearchId(id string) ([7]Shops, error)
 }
 
 type Shops struct {
@@ -41,7 +41,23 @@ func (repo *SqlxRepository) GetShops() ([]Shops, error) {
 	return shops, nil
 }
 
-// GetShopsOfQuestions  Searches の id から使われた Shops の id を返却
-func (repo *SqlxRepository) GetShopsOfQuestion(id string) ([7]Shops, error) {
-	return [7]Shops{}, nil
+// GetShopsBySearchId  Searches の id から使われた Shops の配列を取得する
+func (repo *SqlxRepository) GetShopsBySearchId(search_id string) ([7]Shops, error) {
+	questions, err := repo.GetQuestionsBySearchId(search_id)
+
+	if err != nil {
+		return [7]Shops{}, err
+	}
+
+	var shops [7]Shops
+	var shop Shops
+	sql := "SELECT * FROM shops WHERE shop_id = ?"
+
+	for i, q := range(questions) {
+		row := repo.db.DB.QueryRow(sql, q.Shop_id)
+		row.Scan(&shop.Shop_id, &shop.Name, &shop.Image, &shop.Genre_code, &shop.Subgenre_code, &shop.Price_code, &shop.CreatedAt)
+		shops[i] = shop
+	}
+
+	return shops, nil
 }
