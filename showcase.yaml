@@ -1,6 +1,6 @@
 type: runtime
 
-workdir: "./app"
+workdir: ./app
 
 startup: |
   go mod download
@@ -8,6 +8,6 @@ startup: |
 entrypoint: ./main
 
 http_proxy: 8080
-https: "on"
+https: on
 
 use_mariadb: true
