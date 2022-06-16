@@ -9,19 +9,19 @@ import (
 
 // TODO: たぶん、jsonのやつも書いたほうが良い↓
 type ShopDetail struct {
-	Id        string `json:"id"`
-	Name      string
-	LogoImage string
-	Address   string
-	Lat       float64
-	Lng       float64
-	Genre     []string
-	Budget    string
-	Open      string
-	Close     string
-	Url       string
-	Photo     string
-	Lunch     string
+	Id        string   `json:"id"`
+	Name      string   `json:"name"`
+	LogoImage string   `json:"logo_image"`
+	Address   string   `json:"address"`
+	Lat       float64  `json:"lat"`
+	Lng       float64  `json:"lng"`
+	Genre     []string `json:"genre"`
+	Budget    string   `json:"budget"`
+	Open      string   `json:"open"`
+	Close     string   `json:"close"`
+	Url       string   `json:"url"`
+	Photo     string   `json:"photo"`
+	Lunch     string   `json:"lunch"`
 }
 
 type Answer struct {
