@@ -8,7 +8,7 @@ import (
 
 type Service interface {
 	GenerateRecommend(ctx context.Context, uuid string, answers []Answer) (*ShopDetail, error)
-	GenerateQuestions(ctx context.Context, station string, lat float64, lng float64) ([]*ShopData, error)
+	GenerateQuestions(ctx context.Context, arg model.SearchArgs) ([]*ShopData, error)
 	GetGourmetsData(ctx context.Context, args model.SearchArgs) ([]ShopDetail, error)
 }
 

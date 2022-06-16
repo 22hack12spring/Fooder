@@ -1,6 +1,10 @@
 package service
 
-import "context"
+import (
+	"context"
+
+	"github.com/22hack12spring/backend/model"
+)
 
 // 質問数
 const QUESTION_NUM int = 3
@@ -14,7 +18,7 @@ type ShopData struct {
 }
 
 // 質問の配列を生成する
-func (s *Services) GenerateQuestions(ctx context.Context, station string, lat float64, lng float64) ([]*ShopData, error) {
+func (s *Services) GenerateQuestions(ctx context.Context, arg model.SearchArgs) ([]*ShopData, error) {
 
 	return nil, nil
 }
