@@ -1,9 +1,12 @@
 package router
 
 import (
+	"net/http"
+
 	"github.com/22hack12spring/backend/model"
 	"github.com/22hack12spring/backend/service"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 type Handlers struct {
@@ -12,6 +15,9 @@ type Handlers struct {
 }
 
 func (h *Handlers) SetRouting(e *echo.Echo) error {
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodOptions},
+	}))
 	api := e.Group("/api/v1")
 	gourmet := api.Group("/gourmet")
 	{
