@@ -41,7 +41,7 @@ func (repo *SqlxRepository) GetShops() ([]Shops, error) {
 	return shops, nil
 }
 
-// GetShopsOfQuestions  Questions の id から使われた Shops の id を返却
+// GetShopsOfQuestions  Searches の id から使われた Shops の id を返却
 func (repo *SqlxRepository) GetShopsOfQuestion(id string) ([7]Shops, error) {
 	return [7]Shops{}, nil
 }

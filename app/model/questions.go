@@ -1,11 +1,14 @@
 package model
 
 import (
+	"errors"
+
 	"github.com/google/uuid"
 )
 
 type QuestionsRepository interface {
 	CreateQuestions(args QuestionArgs) ([7]Questions, error)
+	GetQuestionsBySearchId(search_id string) ([7]Questions, error)
 }
 
 type QuestionArgs struct {
@@ -43,4 +46,35 @@ func (repo *SqlxRepository) CreateQuestions(args QuestionArgs) (questions [7]Que
 	}
 	
 	return
+}
+
+// GetQuestionsBySearchId  search_id から questions のデータを取得する
+func (repo *SqlxRepository) GetQuestionsBySearchId(search_id string) ([7]Questions, error) {
+	sql := "SELECT * FROM questions WHERE search_id = ?"
+	
+	rows, err := repo.db.DB.Query(sql, search_id)
+
+	if err != nil {
+		return [7]Questions{}, nil
+	}
+	
+	var res []Questions
+	var question Questions
+
+	for rows.Next() {
+		rows.Scan(&question.ID, &question.Shop_id, &question.Search_id, &question.Number, &question.CreatedAt)
+		res = append(res, question)
+	}
+
+	if len(res) != 7 {
+		return [7]Questions{}, errors.New("backend: Incorrect number of questions are registered")
+	}
+
+	var questions [7]Questions
+
+	for i, r := range(res) {
+		questions[i] = r
+	}
+
+	return questions, nil
 }
