@@ -9,9 +9,9 @@ import (
 )
 
 type GourmetStartRequest struct {
-	Lat     float64 `json:"lat"`
-	Lng     float64 `json:"lng" validate:"required_with=Lat"`
-	Station string  `json:"station" validate:"required_without=Lat Lng"`
+	Lat     float64 `json:"lat" validate:"required_without=Station"`
+	Lng     float64 `json:"lng" validate:"required_without=Station"`
+	Station string  `json:"station"`
 }
 
 type GourmetStartResponse struct {
