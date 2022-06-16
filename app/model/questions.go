@@ -4,13 +4,8 @@ type QuestionsRepository interface {
 	CreateQuestions(args QuestionArgs) (Questions, error)
 }
 
-type QuestionsData struct {
-	Shop_id string
-	Number int
-}
-
 type QuestionArgs struct {
-	QuestionsArr [7]QuestionsData
+	QuestionsArr [7]string
 	Search_id *string
 }
 

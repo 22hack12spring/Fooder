@@ -2,7 +2,7 @@ package model
 
 type ShopsRepository interface {
 	GetShops() ([]Shops, error)
-	GetShopsOfQuestion(id string) ([]Shops, error)
+	GetShopsOfQuestion(id string) ([7]Shops, error)
 }
 
 type Shops struct {
@@ -21,6 +21,6 @@ func (repo *SqlxRepository) GetShops() ([]Shops, error) {
 }
 
 // GetShopsOfQuestions  Questions の id から使われた Shops の id を返却
-func (repo *SqlxRepository) GetShopsOfQuestion(id string) ([]Shops, error) {
-	return []Shops{}, nil
+func (repo *SqlxRepository) GetShopsOfQuestion(id string) ([7]Shops, error) {
+	return [7]Shops{}, nil
 }
