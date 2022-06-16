@@ -17,7 +17,28 @@ type Shops struct {
 
 // GetShops  Shops の一覧を取得(Limit: 100)
 func (repo *SqlxRepository) GetShops() ([]Shops, error) {
-	return []Shops{}, nil
+	sql := "SELECT * FROM shops ORDER BY created_at LIMIT 100";
+
+	rows, err := repo.db.DB.Query(sql)
+
+	if err != nil {
+		panic(err)
+	}
+
+	var shops []Shops
+	var s Shops
+
+	for rows.Next() {
+		err = rows.Scan(&s.Shop_id, &s.Name, &s.Image, &s.Genre_code, &s.Subgenre_code, &s.Price_code, &s.CreatedAt)
+
+		if err != nil {
+			return []Shops{}, nil
+		}
+
+		shops = append(shops, s)
+	}
+
+	return shops, nil
 }
 
 // GetShopsOfQuestions  Questions の id から使われた Shops の id を返却
