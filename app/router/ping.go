@@ -15,6 +15,6 @@ func (h *Handlers) Ping(c echo.Context) error {
 		return err
 	}
 	log.Println(name)
-	return c.String(http.StatusOK, "あいいう")
+	return c.String(http.StatusOK, name)
 
 }
