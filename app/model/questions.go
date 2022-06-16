@@ -5,7 +5,7 @@ type QuestionsRepository interface {
 }
 
 type QuestionArgs struct {
-	QuestionsArr [7]string
+	Shop_ids [7]string
 	Search_id *string
 }
 
