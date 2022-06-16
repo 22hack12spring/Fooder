@@ -10,6 +10,7 @@ import (
 type SearchesRepository interface {
 	CreateSearch(c context.Context, arg SearchArgs) (Searches, error)
 	GetSearch(c context.Context, id string) (Searches, error)
+	DeleteOldSearches(ctx context.Context) error
 }
 
 type SearchArgs struct {
@@ -99,4 +100,13 @@ func ToSearchArgs(lat float64, lng float64, station string) SearchArgs {
 		res.Station = &station
 	}
 	return res
+}
+
+//古いSearchの削除
+func (repo *SqlxRepository) DeleteOldSearches(ctx context.Context) error {
+	_, err := repo.db.ExecContext(ctx, "DELETE FROM searches WHERE created_at < NOW() - INTERVAL 1 DAY")
+	if err != nil {
+		return err
+	}
+	return nil
 }
