@@ -1,6 +1,6 @@
 type: runtime
 
-workdir: ./app
+work_dir: ./app
 
 startup: |
   go mod download
