@@ -28,6 +28,7 @@ func main() {
 	}
 
 	e := echo.New()
+	e.Validator = router.GetValidator()
 
 	repo := model.NewSqlxRepository(db)
 	services, err := service.NewServices(repo)

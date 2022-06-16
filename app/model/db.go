@@ -9,22 +9,22 @@ import (
 )
 
 func EstablishConnection() (*sqlx.DB, error) {
-	user := os.Getenv("DB_USERNAME")
+	user := os.Getenv("MARIADB_USERNAME")
 	if user == "" {
 		user = "root"
 	}
 
-	pass := os.Getenv("DB_PASSWORD")
+	pass := os.Getenv("MARIADB_PASSWORD")
 	if pass == "" {
 		pass = "pass"
 	}
 
-	host := os.Getenv("DB_HOSTNAME")
+	host := os.Getenv("MARIADB_HOSTNAME")
 	if host == "" {
 		host = "localhost"
 	}
 
-	dbname := os.Getenv("DB_DATABASE")
+	dbname := os.Getenv("MARIADB_DATABASE")
 	if dbname == "" {
 		dbname = "db_22spring"
 	}

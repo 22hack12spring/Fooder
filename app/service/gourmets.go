@@ -69,6 +69,7 @@ func (s *Services) trimRawDataToShopDetail(raw string) ([]ShopDetail, error) {
 			Photo:     shop.Photo.Pc.M,
 			Lunch:     shop.Lunch,
 			Genre:     genres[:],
+			Budget:    shop.Budget.Name,
 		}
 		shops = append(shops, shopDetail)
 	}
