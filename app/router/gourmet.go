@@ -24,6 +24,11 @@ type GourmetAnswerRequest struct {
 	Answers []service.Answer `json:"answers" validate:"dive,required,eq=3"`
 }
 
+type GourmetAnswerResponse struct {
+	ID   string              `json:"id"`
+	Shop *service.ShopDetail `json:"shop"`
+}
+
 // API:POST /gourmet/start
 func (h *Handlers) PostGourmetStart(c echo.Context) error {
 	var param GourmetStartRequest
@@ -61,5 +66,8 @@ func (h *Handlers) PostGourmetAnswer(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return c.JSON(http.StatusOK, shop)
+	return c.JSON(http.StatusOK, GourmetAnswerResponse{
+		ID:   param.ID,
+		Shop: shop,
+	})
 }
