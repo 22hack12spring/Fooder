@@ -9,24 +9,21 @@ import (
 
 type GourmetStartRequest struct {
 	Lat     float64 `json:"lat"`
-	Lng     float64 `json:"lng"`
-	Station string  `json:"station"`
+	Lng     float64 `json:"lng" validate:"required_with=Lat"`
+	Station string  `json:"station" validate:"required_without=Lat Lng"`
 }
 
 type GourmetAnswerRequest struct {
-	ID      string           `json:"id"`
-	Answers []service.Answer `json:"answers"`
+	ID      string           `json:"id" validate:"required,uuid"`
+	Answers []service.Answer `json:"answers" validate:"dive,required,eq=3"`
 }
 
 // API:POST /gourmet/start
 func (h *Handlers) PostGourmetStart(c echo.Context) error {
 	var param GourmetStartRequest
-	if err := c.Bind(&param); err != nil {
+	err := validatedBind(c, &param)
+	if err != nil {
 		return err
-	}
-	// check param
-	if (param.Lat == 0 || param.Lng == 0) && param.Station == "" {
-		return echo.NewHTTPError(http.StatusBadRequest, "invalid param")
 	}
 	// uuidの生成とデータベースへの登録
 
@@ -41,12 +38,9 @@ func (h *Handlers) PostGourmetStart(c echo.Context) error {
 // API:POST /gourmet/answer
 func (h *Handlers) PostGourmetAnswer(c echo.Context) error {
 	var param GourmetAnswerRequest
-	if err := c.Bind(&param); err != nil {
+	err := validatedBind(c, &param)
+	if err != nil {
 		return err
-	}
-	// check param
-	if len(param.Answers) != service.QUESTION_NUM {
-		return echo.NewHTTPError(http.StatusBadRequest, "invalid param")
 	}
 	shop, err := h.Service.GenerateRecommend(c.Request().Context(), param.ID, param.Answers)
 	if err != nil {

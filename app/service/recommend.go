@@ -7,7 +7,6 @@ import (
 	"github.com/22hack12spring/backend/model"
 )
 
-// TODO: たぶん、jsonのやつも書いたほうが良い↓
 type ShopDetail struct {
 	Id        string   `json:"id"`
 	Name      string   `json:"name"`
@@ -25,8 +24,8 @@ type ShopDetail struct {
 }
 
 type Answer struct {
-	Id     int    `json:"questionId"`
-	Answer string `json:"answer"`
+	Id     int    `json:"questionId" validate:"required,min=1,max=7"`
+	Answer string `json:"answer" validate:"required,oneof=yes no"`
 }
 
 // GenerateRecommend　おすすめのお店を1件返す
