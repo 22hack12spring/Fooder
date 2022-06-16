@@ -1,7 +1,7 @@
 package model
 
 type QuestionsRepository interface {
-	CreateQuestions(args QuestionArgs) (Questions, error)
+	CreateQuestions(args QuestionArgs) ([7]Questions, error)
 }
 
 type QuestionArgs struct {
@@ -18,6 +18,6 @@ type Questions struct {
 }
 
 // CreateQuestions  質問データと search_id から Questions テーブルにデータを追加する
-func (repo *SqlxRepository) CreateQuestions(args QuestionArgs) (Questions, error) {
-	return Questions{}, nil
+func (repo *SqlxRepository) CreateQuestions(args QuestionArgs) ([7]Questions, error) {
+	return [7]Questions{}, nil
 }
