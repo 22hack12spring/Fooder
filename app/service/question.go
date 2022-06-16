@@ -19,6 +19,10 @@ type ShopData struct {
 
 // 質問の配列を生成する
 func (s *Services) GenerateQuestions(ctx context.Context, arg model.SearchArgs) ([]*ShopData, error) {
-
-	return nil, nil
+	// mock
+	res := []*ShopData{}
+	for i := range ShopsMock {
+		res = append(res, &ShopsMock[i])
+	}
+	return res, nil
 }
