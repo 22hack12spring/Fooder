@@ -1,3 +1,6 @@
+SET character_set_client = utf8mb4;
+SET CHARACTER_SET_CONNECTION = utf8mb4;
+
 INSERT INTO `genres` (`genre_code`, `name`) 
 VALUES
   ('G001', '居酒屋'),
