@@ -45,8 +45,7 @@ func (h *Handlers) PostGourmetAnswer(c echo.Context) error {
 		return err
 	}
 	// check param
-	// WANT: マジックナンバーを消す
-	if len(param.Answers) != service.QUESTION_NUM || len(param.ID) != 36 {
+	if len(param.Answers) != service.QUESTION_NUM {
 		return echo.NewHTTPError(http.StatusBadRequest, "invalid param")
 	}
 	shop, err := h.Service.GenerateRecommend(c.Request().Context(), param.ID, param.Answers)
