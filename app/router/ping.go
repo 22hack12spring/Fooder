@@ -10,5 +10,11 @@ import (
 // /api/ping
 func (h *Handlers) Ping(c echo.Context) error {
 	log.Println("ping recieved")
-	return c.String(http.StatusOK, "pong")
+	name, err := h.Repo.GenreCodeToName(c.Request().Context(), "G001")
+	if err != nil {
+		return err
+	}
+	log.Println(name)
+	return c.String(http.StatusOK, "あいいう")
+
 }
