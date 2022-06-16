@@ -104,7 +104,7 @@ func ToSearchArgs(lat float64, lng float64, station string) SearchArgs {
 
 //古いSearchの削除
 func (repo *SqlxRepository) DeleteOldSearches(ctx context.Context) error {
-	_, err := repo.db.ExecContext(ctx, "DELETE FROM searchs WHERE created_at < NOW() - INTERVAL 1 DAY")
+	_, err := repo.db.ExecContext(ctx, "DELETE FROM searches WHERE created_at < NOW() - INTERVAL 1 DAY")
 	if err != nil {
 		return err
 	}
