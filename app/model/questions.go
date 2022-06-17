@@ -31,7 +31,8 @@ func (repo *SqlxRepository) CreateQuestions(ctx context.Context, args QuestionAr
 	for i, s := range args.ShopIds {
 		questions[i].ShopId = s
 		questions[i].SearchId = args.SearchId
-		questions[i].Number = i
+		// 1 Index
+		questions[i].Number = i + 1
 
 		_, err = repo.db.ExecContext(ctx, sql, questions[i].ShopId, questions[i].SearchId, questions[i].Number)
 

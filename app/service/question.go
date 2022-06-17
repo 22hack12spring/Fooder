@@ -19,7 +19,7 @@ type ShopData struct {
 }
 
 // 質問の配列を生成する
-func (s *Services) GenerateQuestions(ctx context.Context, arg model.SearchArgs) ([]*ShopData, error) {
+func (s *Services) GenerateQuestions(ctx context.Context, arg model.SearchArgs, uuid string) ([]*ShopData, error) {
 	// 質問に使えるお店一覧
 	questionShops, err := s.Repo.GetShops(ctx)
 	if err != nil {
@@ -39,6 +39,7 @@ func (s *Services) GenerateQuestions(ctx context.Context, arg model.SearchArgs) 
 	// TODO: sqlNullStringでValidを確認せずに""として使ってるのがキモい気がするので修正したい
 	// TODO: 質問を3種類しか生成してないので、もったいないかも?V1アルゴリズムに期待
 	// TODO: 質問で埋めるために無理やりループしてるのも実装がびみょい。
+	ids := [7]string{}
 	q1, err := FindSimilarQuestionVec3(vecs[0], questionVectors)
 	if err != nil {
 		return nil, err
@@ -51,6 +52,7 @@ func (s *Services) GenerateQuestions(ctx context.Context, arg model.SearchArgs) 
 		Price:    q1.Shops.PriceCode,
 	}
 	res = append(res, &q1data)
+	ids[0] = q1.Shops.ShopId
 	// 2個目
 	q2, err := FindSimilarQuestionVec3(vecs[1], questionVectors)
 	if err != nil {
@@ -65,6 +67,7 @@ func (s *Services) GenerateQuestions(ctx context.Context, arg model.SearchArgs) 
 			Price:    q2.Shops.PriceCode,
 		}
 		res = append(res, &q2data)
+		ids[i+1] = q2.Shops.ShopId
 	}
 	// 3個目
 	q3, err := FindSimilarQuestionVec3(vecs[2], questionVectors)
@@ -80,11 +83,17 @@ func (s *Services) GenerateQuestions(ctx context.Context, arg model.SearchArgs) 
 			Price:    q3.Shops.PriceCode,
 		}
 		res = append(res, &q3data)
+		ids[i+3] = q3.Shops.ShopId
 	}
+
+	// 送った質問を保存
+	_, err = s.Repo.CreateQuestions(ctx, model.QuestionArgs{
+		ShopIds:  ids,
+		SearchId: uuid,
+	})
+	if err != nil {
+		return nil, err
+	}
+
 	return res, nil
-	// mock
-	// for i := range ShopsMock {
-	// 	res = append(res, &ShopsMock[i])
-	// }
-	// return res, nil
 }

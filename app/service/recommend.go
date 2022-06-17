@@ -47,6 +47,29 @@ func (s *Services) GenerateRecommend(ctx context.Context, uuid string, answers [
 		return nil, err
 	}
 
+	// 予測値を計算する
+	prediction := [3]float64{}
+	const noWeight = 0.7
+	for _, ans := range answers {
+		shop, err := s.Repo.GetShopByQuestionId(ctx, ans.Id, uuid)
+		if err != nil {
+			return nil, err
+		}
+		pr, err := s.ShopToSimilarityVec3(ctx, shop)
+		if err != nil {
+			return nil, err
+		}
+		if ans.Answer == "yes" {
+			prediction[0] += pr[0]
+			prediction[1] += pr[1]
+			prediction[2] += pr[2]
+		} else {
+			prediction[0] -= noWeight * pr[0]
+			prediction[1] -= noWeight * pr[1]
+			prediction[2] -= noWeight * pr[2]
+		}
+	}
+
 	// 類似度の高いものからランダムに返す
 	vec3s, err := ShopsToShopParams(shops)
 	if err != nil {
@@ -54,12 +77,11 @@ func (s *Services) GenerateRecommend(ctx context.Context, uuid string, answers [
 	}
 
 	// mock 中華が食べたい、お金のない人
-	query := [3]float64{0.7, 0.7, -0.5}
 	num := 7
 	if len(vec3s) < num {
 		num = len(vec3s)
 	}
-	similarShops := FindSimilarVec3(vec3s, query, num)
+	similarShops := FindSimilarVec3(vec3s, prediction, num)
 
 	result := rand.Intn(len(similarShops))
 	return similarShops[result].Shop, nil
