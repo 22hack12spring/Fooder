@@ -1,7 +1,6 @@
 package model
 
 import (
-	"context"
 	"fmt"
 	"sync"
 )
@@ -19,16 +18,16 @@ type GenreCache struct {
 var GenreCacheData GenreCache
 
 type GenresRepository interface {
-	GetGenres(ctx context.Context) ([]Genre, error)
+	GetGenres() ([]Genre, error)
 	GenreCodeToName(code string) (string, error)
 }
 
-func (repo *SqlxRepository) GetGenres(ctx context.Context) ([]Genre, error) {
+func (repo *SqlxRepository) GetGenres() ([]Genre, error) {
 	sql := "SELECT * FROM genres"
 
 	var genres []Genre
 
-	err := repo.db.SelectContext(ctx, &genres, sql)
+	err := repo.db.Select(&genres, sql)
 
 	if err != nil {
 		return []Genre{}, err

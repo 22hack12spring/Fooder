@@ -22,3 +22,7 @@ func NewSqlxRepository(db *sqlx.DB) Repository {
 	}
 	return repo
 }
+
+func (repo *SqlxRepository) Initialize() {
+	repo.GetGenres()
+}
