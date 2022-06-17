@@ -23,24 +23,13 @@ type Shops struct {
 // GetShops  Shops の一覧を取得(Limit: 100)
 func (repo *SqlxRepository) GetShops(ctx context.Context) ([]Shops, error) {
 	sql := "SELECT * FROM shops ORDER BY created_at LIMIT 100";
-
-	rows, err := repo.db.Query(sql)
-
-	if err != nil {
-		return []Shops{}, err
-	}
 	
 	var shops []Shops
-	var s Shops
 
-	for rows.Next() {
-		err = rows.Scan(&s.Shop_id, &s.Name, &s.Image, &s.Genre_code, &s.Subgenre_code, &s.Price_code, &s.CreatedAt)
+	err := repo.db.SelectContext(ctx, &shops, sql)
 
-		if err != nil {
-			return []Shops{}, nil
-		}
-
-		shops = append(shops, s)
+	if err != nil {
+		return []Shops{}, nil
 	}
 
 	return shops, nil
@@ -76,14 +65,10 @@ func (repo *SqlxRepository) GetShopsBySearchId(ctx context.Context, searchId str
 	}
 
 	var shops [7]Shops
-	var shop Shops
 	sql := "SELECT * FROM shops WHERE shop_id = ?"
 
 	for i, q := range(questions) {
-
-		row := repo.db.QueryRow(sql, q.Shop_id)
-		row.Scan(&shop.Shop_id, &shop.Name, &shop.Image, &shop.Genre_code, &shop.Subgenre_code, &shop.Price_code, &shop.CreatedAt)
-		shops[i] = shop
+		err = repo.db.GetContext(ctx, &shops[i], sql, q.Shop_id)
 	}
 
 	return shops, nil

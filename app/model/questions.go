@@ -33,7 +33,7 @@ func (repo *SqlxRepository) CreateQuestions(ctx context.Context, args QuestionAr
 		questions[i].Search_id = args.SearchId
 		questions[i].Number = i
 
-		_, err = repo.db.Exec(sql, questions[i].Shop_id, questions[i].Search_id, questions[i].Number)
+		_, err = repo.db.ExecContext(ctx, sql, questions[i].Shop_id, questions[i].Search_id, questions[i].Number)
 
 		if err != nil {
 			questions = [7]Questions{}
@@ -62,19 +62,13 @@ func (repo *SqlxRepository) GetQuestion(ctx context.Context, questionId int, sea
 // GetQuestionsBySearchId  searchId から questions のデータを取得する
 func (repo *SqlxRepository) GetQuestionsBySearchId(ctx context.Context, searchId string) ([7]Questions, error) {
 	sql := "SELECT * FROM questions WHERE search_id = ?"
-	
-	rows, err := repo.db.Query(sql, searchId)
+
+	var res []Questions
+
+	err := repo.db.SelectContext(ctx, &res, sql, searchId)
 
 	if err != nil {
-		return [7]Questions{}, nil
-	}
-	
-	var res []Questions
-	var question Questions
-
-	for rows.Next() {
-		rows.Scan(&question.ID, &question.Shop_id, &question.Search_id, &question.Number, &question.CreatedAt)
-		res = append(res, question)
+		return [7]Questions{}, err
 	}
 
 	if len(res) != 7 {
