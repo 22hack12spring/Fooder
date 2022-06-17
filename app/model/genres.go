@@ -46,6 +46,7 @@ func (repo *SqlxRepository) GetGenres(ctx context.Context) ([]Genre, error) {
 func (repo *SqlxRepository) GenreCodeToName(code string) (string, error) {
 	GenreCacheData.Mux.RLock()
 	name, ok := GenreCacheData.Name[code]
+	GenreCacheData.Mux.RUnlock()
 
 	if !ok {
 		return "", fmt.Errorf("backend: No such genre code exists")
