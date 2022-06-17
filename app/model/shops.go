@@ -22,7 +22,7 @@ func (repo *SqlxRepository) GetShops() ([]Shops, error) {
 	rows, err := repo.db.DB.Query(sql)
 
 	if err != nil {
-		panic(err)
+		return []Shops{}, err
 	}
 
 	var shops []Shops
