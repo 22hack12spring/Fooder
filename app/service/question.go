@@ -36,6 +36,9 @@ func (s *Services) GenerateQuestions(ctx context.Context, arg model.SearchArgs) 
 	vecs := RandomRotate()
 	res := []*ShopData{}
 	// 1個目
+	// TODO: sqlNullStringでValidを確認せずに""として使ってるのがキモい気がするので修正したい
+	// TODO: 質問を3種類しか生成してないので、もったいないかも?V1アルゴリズムに期待
+	// TODO: 質問で埋めるために無理やりループしてるのも実装がびみょい。
 	q1, err := FindSimilarQuestionVec3(vecs[0], questionVectors)
 	if err != nil {
 		return nil, err
