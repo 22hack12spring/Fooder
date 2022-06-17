@@ -3,7 +3,6 @@ package service
 import (
 	"errors"
 	"fmt"
-	"math"
 	"sort"
 )
 
@@ -66,27 +65,35 @@ func ShopsToShopParams(shops []ShopDetail) ([]ShopParams, error) {
 
 // ShopToVec3 お店情報をベクトルに変換する
 func ShopToVec3(shop *ShopDetail) (ShopParams, error) {
-	v, ok := genreVec2[shop.Genre[0]]
-	if !ok {
-		return ShopParams{}, errors.New(fmt.Sprintf("Error: %s", "no genre"))
+	vec3, err := GenreBudgetToVec3(shop.Genre[0], shop.Genre[1], shop.Budget)
+	if err != nil {
+		return ShopParams{}, nil
 	}
-	if shop.Genre[1] != "" {
-		v2, ok := genreVec2[shop.Genre[1]]
+	return ShopParams{
+		Shop: shop,
+		Vec3: vec3,
+	}, nil
+}
+
+// ジャンルと予算からベクトルに変換する // 推薦アルゴリズムv0
+func GenreBudgetToVec3(genre string, subGenre string, budget string) ([3]float64, error) {
+	v, ok := genreVec2[genre]
+	if !ok {
+		return [3]float64{}, errors.New(fmt.Sprintf("Error: %s", "no genre"))
+	}
+	if subGenre != "" {
+		v2, ok := genreVec2[subGenre]
 		if ok {
 			v[0] = (1-weight)*v[0] + weight*v2[0]
 			v[1] = (1-weight)*v[1] + weight*v2[1]
 		}
 	}
 
-	z, ok := budgetVec[shop.Budget]
+	z, ok := budgetVec[budget]
 	if !ok {
-		return ShopParams{}, errors.New(fmt.Sprintf("Error: %s", "no budget"))
+		return [3]float64{}, errors.New(fmt.Sprintf("Error: %s", "no budget"))
 	}
-
-	return ShopParams{
-		Shop: shop,
-		Vec3: [3]float64{v[0], v[1], z},
-	}, nil
+	return [3]float64{v[0], v[1], z}, nil
 }
 
 // AverageVec3 平均を出す
@@ -121,13 +128,4 @@ func FindSimilarVec3(vec3s []ShopParams, vec3 [3]float64, num int) []ShopParams 
 		res = append(res, v.Vec3)
 	}
 	return res[:num]
-}
-
-func SimilarityVec3(vecA [3]float64, vecB [3]float64) float64 {
-	// ユークリッド距離
-	var sum float64
-	for i := 0; i < 3; i++ {
-		sum += math.Pow(float64(vecA[i]-vecB[i]), 2)
-	}
-	return math.Sqrt(sum)
 }

@@ -2,21 +2,34 @@ package model
 
 import (
 	"context"
+	"database/sql"
+	"log"
 )
 
 type ShopsRepository interface {
+	GetShops(ctx context.Context) ([]Shops, error)
 	GetShopByQuestionId(ctx context.Context, questionId int, searchId string) (Shops, error)
 	GetShopsBySearchId(ctx context.Context, searchId string) ([7]Shops, error)
 }
 
 type Shops struct {
-	ShopId       string `db:"shop_id"`
-	Name         string `db:"name"`
-	Image        string `db:"image"`
-	GenreCode    string `db:"genre_code"`
-	SubgenreCode string `db:"subgenre_code"`
-	PriceCode    string `db:"price_code"`
-	CreatedAt    string `db:"created_at"`
+	ShopId       string         `db:"shop_id"`
+	Name         string         `db:"name"`
+	Image        string         `db:"image"`
+	GenreCode    string         `db:"genre_code"`
+	SubgenreCode sql.NullString `db:"subgenre_code"`
+	PriceCode    string         `db:"price_code"`
+	CreatedAt    string         `db:"created_at"`
+}
+
+func (repo *SqlxRepository) GetShops(ctx context.Context) ([]Shops, error) {
+	var shops []Shops
+	err := repo.db.SelectContext(ctx, &shops, "SELECT * FROM shops")
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+	return shops, nil
 }
 
 // GetShopByQuestionId  questionId, searchId からそれに対応する Shop を取得
@@ -33,6 +46,7 @@ func (repo *SqlxRepository) GetShopByQuestionId(ctx context.Context, questionId 
 	err = repo.db.GetContext(ctx, &shop, sql, q.ShopId)
 
 	if err != nil {
+		log.Println(err, q)
 		return Shops{}, err
 	}
 

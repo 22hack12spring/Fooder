@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"log"
 	"math/rand"
 
 	"github.com/22hack12spring/backend/model"
@@ -30,26 +31,66 @@ type Answer struct {
 
 // GenerateRecommend　おすすめのお店を1件返す
 func (s *Services) GenerateRecommend(ctx context.Context, uuid string, answers []Answer) (*ShopDetail, error) {
-	// mock とりあえず大岡山の店を返す
-	station := "大岡山"
-	args := model.SearchArgs{Station: &station}
+	request, err := s.Repo.GetSearch(ctx, uuid)
+	if err != nil {
+		return nil, err
+	}
+	args := model.SearchArgs{}
+	if request.Station.Valid {
+		args.Station = &request.Station.String
+	}
+	if request.Lat.Valid && request.Lng.Valid {
+		args.Lat = &request.Lat.Float64
+		args.Lng = &request.Lng.Float64
+	}
 	shops, err := s.GetGourmetsData(ctx, args)
 	if err != nil {
 		return nil, err
 	}
+
+	// 予測値を計算する
+	prediction := [3]float64{}
+	const noWeight = 0.7
+	for _, ans := range answers {
+		shop, err := s.Repo.GetShopByQuestionId(ctx, ans.Id, uuid)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		pr, err := s.ShopToSimilarityVec3(ctx, shop)
+		if err != nil {
+			log.Println(err)
+			return nil, err
+		}
+		if ans.Answer == "yes" {
+			prediction[0] += pr[0]
+			prediction[1] += pr[1]
+			prediction[2] += pr[2]
+		} else {
+			prediction[0] -= noWeight * pr[0]
+			prediction[1] -= noWeight * pr[1]
+			prediction[2] -= noWeight * pr[2]
+		}
+	}
+
 	// 類似度の高いものからランダムに返す
 	vec3s, err := ShopsToShopParams(shops)
 	if err != nil {
 		return nil, err
 	}
-	// mock 中華が食べたい、お金のない人
-	query := [3]float64{0.7, 0.7, -0.5}
+
 	num := 7
 	if len(vec3s) < num {
 		num = len(vec3s)
 	}
-	similarShops := FindSimilarVec3(vec3s, query, num)
+	similarShops := FindSimilarVec3(vec3s, prediction, num)
 
 	result := rand.Intn(len(similarShops))
 	return similarShops[result].Shop, nil
+}
+
+// 質問結果の値を計算する
+func (s *Services) AnswerShopVector(questions []model.Shops, answers []Answer) ([3]float64, error) {
+	// ナイーブな実装な気がするのでいい感じに修正してください
+	return [3]float64{0.7, 0.7, -0.5}, nil
 }
