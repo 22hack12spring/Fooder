@@ -6,7 +6,7 @@ import (
 
 type ShopsRepository interface {
 	GetShops(ctx context.Context) ([]Shops, error)
-	GetShopByQuestionId(ctx context.Context, questionId int) (Shops, error)
+	GetShopByQuestionId(ctx context.Context, questionId int, searchId string) (Shops, error)
 	GetShopsBySearchId(ctx context.Context, searchId string) ([7]Shops, error)
 }
 
@@ -47,7 +47,7 @@ func (repo *SqlxRepository) GetShops(ctx context.Context) ([]Shops, error) {
 }
 
 // GetShopByQuestionId
-func (repo *SqlxRepository) GetShopByQuestionId(ctx context.Context, questionId int) (Shops, error) {
+func (repo *SqlxRepository) GetShopByQuestionId(ctx context.Context, questionId int, searchId string) (Shops, error) {
 	return Shops{}, nil
 }
 

@@ -7,7 +7,7 @@ import (
 
 type QuestionsRepository interface {
 	CreateQuestions(ctx context.Context, args QuestionArgs) ([7]Questions, error)
-	GetQuestion(ctx context.Context, questionId string) (Questions, error)
+	GetQuestion(ctx context.Context, questionId int, searchId string) (Questions, error)
 	GetQuestionsBySearchId(ctx context.Context, searchId string) ([7]Questions, error)
 }
 
@@ -45,7 +45,7 @@ func (repo *SqlxRepository) CreateQuestions(ctx context.Context, args QuestionAr
 }
 
 // GetQuestion  queestionId から Questions のデータを取得する
-func (repo *SqlxRepository) GetQuestion(ctx context.Context, questionId string) (Questions, error) {
+func (repo *SqlxRepository) GetQuestion(ctx context.Context, questionId int, searchId string) (Questions, error) {
 	return Questions{}, nil
 }
 
