@@ -8,6 +8,7 @@ type Repository interface {
 	SearchesRepository
 	GourmetsRepository
 	GourmetsRequest
+	ShopsRepository
 }
 
 type SqlxRepository struct {
