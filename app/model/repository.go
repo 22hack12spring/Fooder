@@ -10,6 +10,8 @@ type Repository interface {
 	GourmetsRepository
 	GourmetsRequest
 	ShopsRepository
+
+	Initialize() error
 }
 
 type SqlxRepository struct {
@@ -23,6 +25,12 @@ func NewSqlxRepository(db *sqlx.DB) Repository {
 	return repo
 }
 
-func (repo *SqlxRepository) Initialize() {
-	repo.GetGenres()
+func (repo *SqlxRepository) Initialize() error {
+	_, err := repo.GetGenres()
+	
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

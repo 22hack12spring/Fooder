@@ -34,6 +34,11 @@ func (repo *SqlxRepository) GetGenres() ([]Genre, error) {
 	}
 
 	GenreCacheData.Mux.Lock()
+
+	if GenreCacheData.Name == nil {
+		GenreCacheData.Name = make(map[string]string)
+	}
+
 	for _, g := range genres {
 		GenreCacheData.Name[g.GenreCode] = g.Name
 	}
