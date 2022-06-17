@@ -10,13 +10,13 @@ type ShopsRepository interface {
 }
 
 type Shops struct {
-	Shop_id			string 	`db:"shop_id"`
-	Name			string	`db:"name"`
-	Image			string	`db:"image"`
-	Genre_code		string 	`db:"genre_code"`
-	Subgenre_code	string	`db:"subgenre_code"`
-	Price_code 		string	`db:"price_code"`
-	CreatedAt		string	`db:"created_at"`
+	Shop_id       string `db:"shop_id"`
+	Name          string `db:"name"`
+	Image         string `db:"image"`
+	Genre_code    string `db:"genre_code"`
+	Subgenre_code string `db:"subgenre_code"`
+	Price_code    string `db:"price_code"`
+	CreatedAt     string `db:"created_at"`
 }
 
 // GetShopByQuestionId  questionId, searchId からそれに対応する Shop を取得
@@ -51,7 +51,7 @@ func (repo *SqlxRepository) GetShopsBySearchId(ctx context.Context, searchId str
 	var shops [7]Shops
 	sql := "SELECT * FROM shops WHERE shop_id = ?"
 
-	for i, q := range(questions) {
+	for i, q := range questions {
 		err = repo.db.GetContext(ctx, &shops[i], sql, q.Shop_id)
 	}
 

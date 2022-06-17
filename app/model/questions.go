@@ -1,8 +1,8 @@
 package model
 
 import (
-	"errors"
 	"context"
+	"errors"
 )
 
 type QuestionsRepository interface {
@@ -12,23 +12,23 @@ type QuestionsRepository interface {
 }
 
 type QuestionArgs struct {
-	ShopIds [7]string
+	ShopIds  [7]string
 	SearchId string
 }
 
 type Questions struct {
-	ID			string	`db:"id"`
-	Shop_id		string	`db:"shop_id"`
-	Search_id	string	`db:"search_id"`
-	Number		int		`db:"number"`
-	CreatedAt	string	`db:"created_at"`
+	ID        string `db:"id"`
+	Shop_id   string `db:"shop_id"`
+	Search_id string `db:"search_id"`
+	Number    int    `db:"number"`
+	CreatedAt string `db:"created_at"`
 }
 
 // CreateQuestions  質問データと search_id から Questions テーブルにデータを追加する
 func (repo *SqlxRepository) CreateQuestions(ctx context.Context, args QuestionArgs) (questions [7]Questions, err error) {
 	sql := "INSERT questions (shop_id, search_id, number) VALUES (?, ?, ?)"
 
-	for i, s := range(args.ShopIds) {
+	for i, s := range args.ShopIds {
 		questions[i].Shop_id = s
 		questions[i].Search_id = args.SearchId
 		questions[i].Number = i
@@ -40,7 +40,7 @@ func (repo *SqlxRepository) CreateQuestions(ctx context.Context, args QuestionAr
 			return
 		}
 	}
-	
+
 	return
 }
 
@@ -77,7 +77,7 @@ func (repo *SqlxRepository) GetQuestionsBySearchId(ctx context.Context, searchId
 
 	var questions [7]Questions
 
-	for i, r := range(res) {
+	for i, r := range res {
 		questions[i] = r
 	}
 
