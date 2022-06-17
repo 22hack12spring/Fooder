@@ -34,11 +34,11 @@ func (s *Services) ShopsToQuestionSimilarity(ctx context.Context, shops []model.
 }
 
 func (s *Services) ShopToSimilarityVec3(ctx context.Context, shop model.Shops) ([3]float64, error) {
-	genre, err := s.Repo.GenreCodeToName(ctx, shop.GenreCode)
+	genre, err := s.Repo.GenreCodeToName(shop.GenreCode)
 	if err != nil {
 		return [3]float64{}, err
 	}
-	subGenre, err := s.Repo.GenreCodeToName(ctx, shop.SubgenreCode.String)
+	subGenre, err := s.Repo.GenreCodeToName(shop.SubgenreCode.String)
 	if err != nil {
 		// skip
 		subGenre = ""
