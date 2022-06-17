@@ -2,18 +2,18 @@ package model
 
 import (
 	"errors"
-
-	"github.com/google/uuid"
+	"context"
 )
 
 type QuestionsRepository interface {
-	CreateQuestions(args QuestionArgs) ([7]Questions, error)
-	GetQuestionsBySearchId(search_id string) ([7]Questions, error)
+	CreateQuestions(ctx context.Context, args QuestionArgs) ([7]Questions, error)
+	GetQuestion(ctx context.Context, questionId string) (Questions, error)
+	GetQuestionsBySearchId(ctx context.Context, searchId string) ([7]Questions, error)
 }
 
 type QuestionArgs struct {
-	Shop_ids [7]string
-	Search_id *string
+	ShopIds [7]string
+	SearchId string
 }
 
 type Questions struct {
@@ -25,19 +25,15 @@ type Questions struct {
 }
 
 // CreateQuestions  質問データと search_id から Questions テーブルにデータを追加する
-func (repo *SqlxRepository) CreateQuestions(args QuestionArgs) (questions [7]Questions, err error) {
-	var u uuid.UUID
-	
-	sql := "INSERT questions (id, shop_id, search_id, number) VALUES (?, ?, ?, ?)"
+func (repo *SqlxRepository) CreateQuestions(ctx context.Context, args QuestionArgs) (questions [7]Questions, err error) {
+	sql := "INSERT questions (shop_id, search_id, number) VALUES (?, ?, ?)"
 
-	for i, s := range(args.Shop_ids) {
-		u = uuid.New()
-		questions[i].ID = u.String()
+	for i, s := range(args.ShopIds) {
 		questions[i].Shop_id = s
-		questions[i].Search_id = *args.Search_id
+		questions[i].Search_id = args.SearchId
 		questions[i].Number = i
 
-		_, err = repo.db.DB.Exec(sql, &questions[i].ID, &questions[i].Shop_id, &questions[i].Search_id, &questions[i].Number)
+		_, err = repo.db.Exec(sql, questions[i].Shop_id, questions[i].Search_id, questions[i].Number)
 
 		if err != nil {
 			questions = [7]Questions{}
@@ -48,11 +44,17 @@ func (repo *SqlxRepository) CreateQuestions(args QuestionArgs) (questions [7]Que
 	return
 }
 
-// GetQuestionsBySearchId  search_id から questions のデータを取得する
-func (repo *SqlxRepository) GetQuestionsBySearchId(search_id string) ([7]Questions, error) {
+// GetQuestion  queestionId から Questions のデータを取得する
+func (repo *SqlxRepository) GetQuestion(ctx context.Context, questionId string) (Questions, error) {
+	return Questions{}, nil
+}
+
+// いつか使うかもしれないので残しておきます
+// GetQuestionsBySearchId  searchId から questions のデータを取得する
+func (repo *SqlxRepository) GetQuestionsBySearchId(ctx context.Context, searchId string) ([7]Questions, error) {
 	sql := "SELECT * FROM questions WHERE search_id = ?"
 	
-	rows, err := repo.db.DB.Query(sql, search_id)
+	rows, err := repo.db.Query(sql, searchId)
 
 	if err != nil {
 		return [7]Questions{}, nil

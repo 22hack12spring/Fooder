@@ -1,8 +1,13 @@
 package model
 
+import (
+	"context"
+)
+
 type ShopsRepository interface {
-	GetShops() ([]Shops, error)
-	GetShopsBySearchId(id string) ([7]Shops, error)
+	GetShops(ctx context.Context) ([]Shops, error)
+	GetShopByQuestionId(ctx context.Context, questionId int) (Shops, error)
+	GetShopsBySearchId(ctx context.Context, searchId string) ([7]Shops, error)
 }
 
 type Shops struct {
@@ -16,15 +21,15 @@ type Shops struct {
 }
 
 // GetShops  Shops の一覧を取得(Limit: 100)
-func (repo *SqlxRepository) GetShops() ([]Shops, error) {
+func (repo *SqlxRepository) GetShops(ctx context.Context) ([]Shops, error) {
 	sql := "SELECT * FROM shops ORDER BY created_at LIMIT 100";
 
-	rows, err := repo.db.DB.Query(sql)
+	rows, err := repo.db.Query(sql)
 
 	if err != nil {
 		return []Shops{}, err
 	}
-
+	
 	var shops []Shops
 	var s Shops
 
@@ -41,9 +46,15 @@ func (repo *SqlxRepository) GetShops() ([]Shops, error) {
 	return shops, nil
 }
 
+// GetShopByQuestionId
+func (repo *SqlxRepository) GetShopByQuestionId(ctx context.Context, questionId int) (Shops, error) {
+	return Shops{}, nil
+}
+
+// これもいつか使えそうなので残しておきます
 // GetShopsBySearchId  Searches の id から使われた Shops の配列を取得する
-func (repo *SqlxRepository) GetShopsBySearchId(search_id string) ([7]Shops, error) {
-	questions, err := repo.GetQuestionsBySearchId(search_id)
+func (repo *SqlxRepository) GetShopsBySearchId(ctx context.Context, searchId string) ([7]Shops, error) {
+	questions, err := repo.GetQuestionsBySearchId(ctx, searchId)
 
 	if err != nil {
 		return [7]Shops{}, err
@@ -54,7 +65,8 @@ func (repo *SqlxRepository) GetShopsBySearchId(search_id string) ([7]Shops, erro
 	sql := "SELECT * FROM shops WHERE shop_id = ?"
 
 	for i, q := range(questions) {
-		row := repo.db.DB.QueryRow(sql, q.Shop_id)
+
+		row := repo.db.QueryRow(sql, q.Shop_id)
 		row.Scan(&shop.Shop_id, &shop.Name, &shop.Image, &shop.Genre_code, &shop.Subgenre_code, &shop.Price_code, &shop.CreatedAt)
 		shops[i] = shop
 	}
