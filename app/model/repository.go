@@ -6,10 +6,10 @@ type Repository interface {
 	GenresRepository
 	PricesRepository
 	SearchesRepository
-	ShopsRepository
 	QuestionsRepository
 	GourmetsRepository
 	GourmetsRequest
+	ShopsRepository
 }
 
 type SqlxRepository struct {

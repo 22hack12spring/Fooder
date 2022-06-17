@@ -5,7 +5,6 @@ import (
 )
 
 type ShopsRepository interface {
-	GetShops(ctx context.Context) ([]Shops, error)
 	GetShopByQuestionId(ctx context.Context, questionId int, searchId string) (Shops, error)
 	GetShopsBySearchId(ctx context.Context, searchId string) ([7]Shops, error)
 }
@@ -18,21 +17,6 @@ type Shops struct {
 	Subgenre_code	string	`db:"subgenre_code"`
 	Price_code 		string	`db:"price_code"`
 	CreatedAt		string	`db:"created_at"`
-}
-
-// GetShops  Shops の一覧を取得(Limit: 100)
-func (repo *SqlxRepository) GetShops(ctx context.Context) ([]Shops, error) {
-	sql := "SELECT * FROM shops ORDER BY created_at LIMIT 100";
-	
-	var shops []Shops
-
-	err := repo.db.SelectContext(ctx, &shops, sql)
-
-	if err != nil {
-		return []Shops{}, nil
-	}
-
-	return shops, nil
 }
 
 // GetShopByQuestionId  questionId, searchId からそれに対応する Shop を取得
