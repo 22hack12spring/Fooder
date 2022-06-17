@@ -46,9 +46,24 @@ func (repo *SqlxRepository) GetShops(ctx context.Context) ([]Shops, error) {
 	return shops, nil
 }
 
-// GetShopByQuestionId
+// GetShopByQuestionId  questionId, searchId からそれに対応する Shop を取得
 func (repo *SqlxRepository) GetShopByQuestionId(ctx context.Context, questionId int, searchId string) (Shops, error) {
-	return Shops{}, nil
+	q, err := repo.GetQuestion(ctx, questionId, searchId)
+
+	if err != nil {
+		return Shops{}, err
+	}
+
+	var shop Shops
+	sql := "SELECT * FROM shops WHERE shop_id = ?"
+
+	err = repo.db.GetContext(ctx, &shop, sql, q.Shop_id)
+
+	if err != nil {
+		return Shops{}, err
+	}
+
+	return shop, err
 }
 
 // これもいつか使えそうなので残しておきます
