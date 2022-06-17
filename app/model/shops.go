@@ -46,6 +46,7 @@ func (repo *SqlxRepository) GetShopByQuestionId(ctx context.Context, questionId 
 	err = repo.db.GetContext(ctx, &shop, sql, q.ShopId)
 
 	if err != nil {
+		log.Println(err, q)
 		return Shops{}, err
 	}
 

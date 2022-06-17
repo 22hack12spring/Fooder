@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"log"
 	"math/rand"
 
 	"github.com/22hack12spring/backend/model"
@@ -53,10 +54,12 @@ func (s *Services) GenerateRecommend(ctx context.Context, uuid string, answers [
 	for _, ans := range answers {
 		shop, err := s.Repo.GetShopByQuestionId(ctx, ans.Id, uuid)
 		if err != nil {
+			log.Println(err)
 			return nil, err
 		}
 		pr, err := s.ShopToSimilarityVec3(ctx, shop)
 		if err != nil {
+			log.Println(err)
 			return nil, err
 		}
 		if ans.Answer == "yes" {
@@ -76,7 +79,6 @@ func (s *Services) GenerateRecommend(ctx context.Context, uuid string, answers [
 		return nil, err
 	}
 
-	// mock 中華が食べたい、お金のない人
 	num := 7
 	if len(vec3s) < num {
 		num = len(vec3s)

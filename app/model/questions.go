@@ -49,7 +49,7 @@ func (repo *SqlxRepository) CreateQuestions(ctx context.Context, args QuestionAr
 func (repo *SqlxRepository) GetQuestion(ctx context.Context, questionId int, searchId string) (Questions, error) {
 	var question Questions
 
-	sql := "SELECT * FROM questions WHERE id = ? AND search_id = ?"
+	sql := "SELECT * FROM questions WHERE number = ? AND search_id = ?"
 	err := repo.db.GetContext(ctx, &question, sql, questionId, searchId)
 
 	if err != nil {
