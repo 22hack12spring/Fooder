@@ -2,6 +2,8 @@ package model
 
 import (
 	"context"
+	"fmt"
+	"sync"
 )
 
 type Genre struct {
@@ -9,19 +11,45 @@ type Genre struct {
 	Name      string `db:"name"`
 }
 
+type GenreCache struct {
+	Name map[string]string
+	Mux  sync.RWMutex
+}
+
+var GenreCacheData GenreCache
+
 type GenresRepository interface {
-	GetGenres() ([]*Genre, error)
-	GenreCodeToName(ctx context.Context, code string) (string, error)
+	GetGenres(ctx context.Context) ([]Genre, error)
+	GenreCodeToName(code string) (string, error)
 }
 
-func (repo *SqlxRepository) GetGenres() ([]*Genre, error) {
-	return nil, nil
-}
+func (repo *SqlxRepository) GetGenres(ctx context.Context) ([]Genre, error) {
+	sql := "SELECT * FROM genres"
 
-func (repo *SqlxRepository) GenreCodeToName(ctx context.Context, code string) (string, error) {
-	var name string
-	if err := repo.db.Get(&name, "SELECT name FROM genres WHERE genre_code=?", code); err != nil {
-		return "", err
+	var genres []Genre
+
+	err := repo.db.SelectContext(ctx, &genres, sql)
+
+	if err != nil {
+		return []Genre{}, err
 	}
+
+	GenreCacheData.Mux.Lock()
+	for _, g := range genres {
+		GenreCacheData.Name[g.GenreCode] = g.Name
+	}
+	GenreCacheData.Mux.Unlock()
+
+	return genres, nil
+}
+
+func (repo *SqlxRepository) GenreCodeToName(code string) (string, error) {
+	GenreCacheData.Mux.RLock()
+	name, ok := GenreCacheData.Name[code]
+
+	if !ok {
+		return "", fmt.Errorf("backend: No such genre code exists")
+	}
+
 	return name, nil
 }
