@@ -30,18 +30,29 @@ type Answer struct {
 
 // GenerateRecommend　おすすめのお店を1件返す
 func (s *Services) GenerateRecommend(ctx context.Context, uuid string, answers []Answer) (*ShopDetail, error) {
-	// mock とりあえず大岡山の店を返す
-	station := "大岡山"
-	args := model.SearchArgs{Station: &station}
+	request, err := s.Repo.GetSearch(ctx, uuid)
+	if err != nil {
+		return nil, err
+	}
+	args := model.SearchArgs{}
+	if request.Station.Valid {
+		args.Station = &request.Station.String
+	}
+	if request.Lat.Valid && request.Lng.Valid {
+		args.Lat = &request.Lat.Float64
+		args.Lng = &request.Lng.Float64
+	}
 	shops, err := s.GetGourmetsData(ctx, args)
 	if err != nil {
 		return nil, err
 	}
+
 	// 類似度の高いものからランダムに返す
 	vec3s, err := ShopsToShopParams(shops)
 	if err != nil {
 		return nil, err
 	}
+
 	// mock 中華が食べたい、お金のない人
 	query := [3]float64{0.7, 0.7, -0.5}
 	num := 7
@@ -52,4 +63,10 @@ func (s *Services) GenerateRecommend(ctx context.Context, uuid string, answers [
 
 	result := rand.Intn(len(similarShops))
 	return similarShops[result].Shop, nil
+}
+
+// 質問結果の値を計算する
+func (s *Services) AnswerShopVector(questions []model.Shops, answers []Answer) ([3]float64, error) {
+	// ナイーブな実装な気がするのでいい感じに修正してください
+	return [3]float64{0.7, 0.7, -0.5}, nil
 }
