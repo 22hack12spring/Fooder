@@ -44,9 +44,18 @@ func (repo *SqlxRepository) CreateQuestions(ctx context.Context, args QuestionAr
 	return
 }
 
-// GetQuestion  queestionId から Questions のデータを取得する
+// GetQuestion  queestionId, searchId から Questions のデータを取得する
 func (repo *SqlxRepository) GetQuestion(ctx context.Context, questionId int, searchId string) (Questions, error) {
-	return Questions{}, nil
+	var question Questions
+
+	sql := "SELECT * FROM questions WHERE question_id = ? AND search_id = ?"
+	err := repo.db.GetContext(ctx, question, sql)
+
+	if err != nil {
+		return Questions{}, nil
+	}
+
+	return question, nil
 }
 
 // いつか使うかもしれないので残しておきます
