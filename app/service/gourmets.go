@@ -66,7 +66,7 @@ func (s *Services) trimRawDataToShopDetail(raw string) ([]ShopDetail, error) {
 			Open:      shop.Open,
 			Close:     shop.Close,
 			Url:       shop.Urls.Pc,
-			Photo:     shop.Photo.Pc.M,
+			Photo:     shop.Photo.Pc.L,
 			Lunch:     shop.Lunch,
 			Genre:     genres[:],
 			Budget:    shop.Budget.Name,
