@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/22hack12spring/backend/model"
 )
@@ -19,10 +20,68 @@ type ShopData struct {
 
 // 質問の配列を生成する
 func (s *Services) GenerateQuestions(ctx context.Context, arg model.SearchArgs) ([]*ShopData, error) {
-	// mock
+	// 質問に使えるお店一覧
+	questionShops, err := s.Repo.GetShops(ctx)
+	if err != nil {
+		return nil, err
+	}
+	questionVectors, err := s.ShopsToQuestionSimilarity(ctx, questionShops)
+	if err != nil {
+		return nil, err
+	}
+	if len(questionVectors) < 3 {
+		return nil, errors.New("question vectors is less than 3")
+	}
+
+	vecs := RandomRotate()
 	res := []*ShopData{}
-	for i := range ShopsMock {
-		res = append(res, &ShopsMock[i])
+	// 1個目
+	q1, err := FindSimilarQuestionVec3(vecs[0], questionVectors)
+	if err != nil {
+		return nil, err
+	}
+	q1data := ShopData{
+		Id:       1,
+		Image:    q1.Shops.Image,
+		Genre:    q1.Shops.GenreCode,
+		SubGenre: q1.Shops.SubgenreCode.String,
+		Price:    q1.Shops.PriceCode,
+	}
+	res = append(res, &q1data)
+	// 2個目
+	q2, err := FindSimilarQuestionVec3(vecs[1], questionVectors)
+	if err != nil {
+		return nil, err
+	}
+	for i := 0; i < 2; i++ {
+		q2data := ShopData{
+			Id:       i + 2,
+			Image:    q2.Shops.Image,
+			Genre:    q2.Shops.GenreCode,
+			SubGenre: q2.Shops.SubgenreCode.String,
+			Price:    q2.Shops.PriceCode,
+		}
+		res = append(res, &q2data)
+	}
+	// 3個目
+	q3, err := FindSimilarQuestionVec3(vecs[2], questionVectors)
+	if err != nil {
+		return nil, err
+	}
+	for i := 0; i < 4; i++ {
+		q3data := ShopData{
+			Id:       i + 4,
+			Image:    q3.Shops.Image,
+			Genre:    q3.Shops.GenreCode,
+			SubGenre: q3.Shops.SubgenreCode.String,
+			Price:    q3.Shops.PriceCode,
+		}
+		res = append(res, &q3data)
 	}
 	return res, nil
+	// mock
+	// for i := range ShopsMock {
+	// 	res = append(res, &ShopsMock[i])
+	// }
+	// return res, nil
 }
