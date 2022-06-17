@@ -6,6 +6,7 @@ type Repository interface {
 	GenresRepository
 	PricesRepository
 	SearchesRepository
+	QuestionsRepository
 	GourmetsRepository
 	GourmetsRequest
 	ShopsRepository
