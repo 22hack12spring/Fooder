@@ -10,13 +10,13 @@ type ShopsRepository interface {
 }
 
 type Shops struct {
-	Shop_id       string `db:"shop_id"`
-	Name          string `db:"name"`
-	Image         string `db:"image"`
-	Genre_code    string `db:"genre_code"`
-	Subgenre_code string `db:"subgenre_code"`
-	Price_code    string `db:"price_code"`
-	CreatedAt     string `db:"created_at"`
+	ShopId       string `db:"shop_id"`
+	Name         string `db:"name"`
+	Image        string `db:"image"`
+	GenreCode    string `db:"genre_code"`
+	SubgenreCode string `db:"subgenre_code"`
+	PriceCode    string `db:"price_code"`
+	CreatedAt    string `db:"created_at"`
 }
 
 // GetShopByQuestionId  questionId, searchId からそれに対応する Shop を取得
@@ -30,7 +30,7 @@ func (repo *SqlxRepository) GetShopByQuestionId(ctx context.Context, questionId 
 	var shop Shops
 	sql := "SELECT * FROM shops WHERE shop_id = ?"
 
-	err = repo.db.GetContext(ctx, &shop, sql, q.Shop_id)
+	err = repo.db.GetContext(ctx, &shop, sql, q.ShopId)
 
 	if err != nil {
 		return Shops{}, err
@@ -52,7 +52,7 @@ func (repo *SqlxRepository) GetShopsBySearchId(ctx context.Context, searchId str
 	sql := "SELECT * FROM shops WHERE shop_id = ?"
 
 	for i, q := range questions {
-		err = repo.db.GetContext(ctx, &shops[i], sql, q.Shop_id)
+		err = repo.db.GetContext(ctx, &shops[i], sql, q.ShopId)
 	}
 
 	return shops, nil

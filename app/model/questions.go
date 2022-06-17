@@ -18,8 +18,8 @@ type QuestionArgs struct {
 
 type Questions struct {
 	ID        int    `db:"id"`
-	Shop_id   string `db:"shop_id"`
-	Search_id string `db:"search_id"`
+	ShopId    string `db:"shop_id"`
+	SearchId  string `db:"search_id"`
 	Number    int    `db:"number"`
 	CreatedAt string `db:"created_at"`
 }
@@ -29,11 +29,11 @@ func (repo *SqlxRepository) CreateQuestions(ctx context.Context, args QuestionAr
 	sql := "INSERT questions (shop_id, search_id, number) VALUES (?, ?, ?)"
 
 	for i, s := range args.ShopIds {
-		questions[i].Shop_id = s
-		questions[i].Search_id = args.SearchId
+		questions[i].ShopId = s
+		questions[i].SearchId = args.SearchId
 		questions[i].Number = i
 
-		_, err = repo.db.ExecContext(ctx, sql, questions[i].Shop_id, questions[i].Search_id, questions[i].Number)
+		_, err = repo.db.ExecContext(ctx, sql, questions[i].ShopId, questions[i].SearchId, questions[i].Number)
 
 		if err != nil {
 			questions = [7]Questions{}
