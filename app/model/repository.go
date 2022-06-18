@@ -32,5 +32,11 @@ func (repo *SqlxRepository) Initialize() error {
 		return err
 	}
 
+	_, err = repo.GetPrices()
+
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
