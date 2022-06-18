@@ -9,6 +9,7 @@ type QuestionsRepository interface {
 	CreateQuestions(ctx context.Context, args QuestionArgs) ([7]Questions, error)
 	GetQuestion(ctx context.Context, questionId int, searchId string) (Questions, error)
 	GetQuestionsBySearchId(ctx context.Context, searchId string) ([7]Questions, error)
+	DeleteOldQuestions(ctx context.Context) error
 }
 
 type QuestionArgs struct {
@@ -83,4 +84,13 @@ func (repo *SqlxRepository) GetQuestionsBySearchId(ctx context.Context, searchId
 	}
 
 	return questions, nil
+}
+
+//古いQuestionの削除
+func (repo *SqlxRepository) DeleteOldQuestions(ctx context.Context) error {
+	_, err := repo.db.ExecContext(ctx, "DELETE FROM questions WHERE created_at < NOW() - INTERVAL 1 DAY")
+	if err != nil {
+		return err
+	}
+	return nil
 }
