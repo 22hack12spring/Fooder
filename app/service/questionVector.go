@@ -43,7 +43,7 @@ func (s *Services) ShopToSimilarityVec3(ctx context.Context, shop model.Shops) (
 		// skip
 		subGenre = ""
 	}
-	budget, err := s.Repo.PriceCodeToName(ctx, shop.PriceCode)
+	budget, err := s.Repo.PriceCodeToName(shop.PriceCode)
 	if err != nil {
 		return [3]float64{}, err
 	}
