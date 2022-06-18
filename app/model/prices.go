@@ -1,7 +1,7 @@
 package model
 
 import (
-	"context"
+	"fmt"
 	"sync"
 )
 
@@ -19,7 +19,7 @@ var PriceCacheData PriceCache
 
 type PricesRepository interface {
 	GetPrices() ([]Price, error)
-	PriceCodeToName(ctx context.Context, code string) (string, error)
+	PriceCodeToName(code string) (string, error)
 }
 
 func (repo *SqlxRepository) GetPrices() ([]Price, error) {
@@ -47,10 +47,14 @@ func (repo *SqlxRepository) GetPrices() ([]Price, error) {
 	return prices, nil
 }
 
-func (repo *SqlxRepository) PriceCodeToName(ctx context.Context, code string) (string, error) {
-	var name string
-	if err := repo.db.Get(&name, "SELECT name FROM prices WHERE price_code=?", code); err != nil {
-		return "", err
+func (repo *SqlxRepository) PriceCodeToName(code string) (string, error) {
+	PriceCacheData.Mux.RLock()
+	name, ok := PriceCacheData.Name[code]
+	PriceCacheData.Mux.RUnlock()
+
+	if !ok {
+		return "", fmt.Errorf("backend: No such price code exists")
 	}
+
 	return name, nil
 }
