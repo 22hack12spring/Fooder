@@ -65,7 +65,7 @@ func ShopsToShopParams(shops []ShopDetail) ([]ShopParams, error) {
 
 // ShopToVec3 お店情報をベクトルに変換する
 func ShopToVec3(shop *ShopDetail) (ShopParams, error) {
-	vec3, err := GenreBudgetToVec3(shop.Genre[0], shop.Genre[1], shop.Budget)
+	vec3, err := GenreBudgetToVec3(shop.Genre, shop.SubGenre, shop.Budget)
 	if err != nil {
 		return ShopParams{}, nil
 	}

@@ -9,19 +9,20 @@ import (
 )
 
 type ShopDetail struct {
-	Id        string   `json:"id"`
-	Name      string   `json:"name"`
-	LogoImage string   `json:"logo_image"`
-	Address   string   `json:"address"`
-	Lat       float64  `json:"lat"`
-	Lng       float64  `json:"lng"`
-	Genre     []string `json:"genre"`
-	Budget    string   `json:"budget"`
-	Open      string   `json:"open"`
-	Close     string   `json:"close"`
-	Url       string   `json:"url"`
-	Photo     string   `json:"photo"`
-	Lunch     string   `json:"lunch"`
+	Id        string  `json:"id"`
+	Name      string  `json:"name"`
+	LogoImage string  `json:"logoImage"`
+	Address   string  `json:"address"`
+	Lat       float64 `json:"lat"`
+	Lng       float64 `json:"lng"`
+	Genre     string  `json:"genre"`
+	SubGenre  string  `json:"subgenre"`
+	Budget    string  `json:"budget"`
+	Open      string  `json:"open"`
+	Close     string  `json:"close"`
+	Url       string  `json:"url"`
+	Photo     string  `json:"photo"`
+	Lunch     string  `json:"lunch"`
 }
 
 type Answer struct {
