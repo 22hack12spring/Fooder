@@ -17,7 +17,7 @@ type ShopDetail struct {
 	Lng       float64 `json:"lng"`
 	Genre     string  `json:"genre"`
 	SubGenre  string  `json:"subgenre"`
-	Budget    string  `json:"budget"`
+	Budget    string  `json:"price"`
 	Open      string  `json:"open"`
 	Close     string  `json:"close"`
 	Url       string  `json:"url"`
