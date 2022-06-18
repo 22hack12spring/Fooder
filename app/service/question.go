@@ -82,18 +82,18 @@ func (s *Services) GenerateQuestions(ctx context.Context, arg model.SearchArgs, 
 
 // model.Shops to ShopData
 func (s *Services) ShopToShopData(ctx context.Context, shop *model.Shops, id int) (*ShopData, error) {
-	genre, err := s.Repo.GenreCodeToName(ctx, shop.GenreCode)
+	genre, err := s.Repo.GenreCodeToName(shop.GenreCode)
 	if err != nil {
 		return nil, err
 	}
 	var subGenre string
 	if shop.SubgenreCode.Valid {
-		subGenre, err = s.Repo.GenreCodeToName(ctx, shop.SubgenreCode.String)
+		subGenre, err = s.Repo.GenreCodeToName(shop.SubgenreCode.String)
 		if err != nil {
 			return nil, err
 		}
 	}
-	price, err := s.Repo.PriceCodeToName(ctx, shop.PriceCode)
+	price, err := s.Repo.PriceCodeToName(shop.PriceCode)
 	if err != nil {
 		return nil, err
 	}
