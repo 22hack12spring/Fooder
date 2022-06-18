@@ -55,7 +55,6 @@ func (s *Services) trimRawDataToShopDetail(raw string) ([]ShopDetail, error) {
 
 	var shops []ShopDetail
 	for _, shop := range gourmets.Shop {
-		genres := [...]string{shop.Genre.Name, shop.SubGenre.Name}
 		shopDetail := ShopDetail{
 			Id:        shop.ID,
 			Name:      shop.Name,
@@ -68,7 +67,8 @@ func (s *Services) trimRawDataToShopDetail(raw string) ([]ShopDetail, error) {
 			Url:       shop.Urls.Pc,
 			Photo:     shop.Photo.Pc.L,
 			Lunch:     shop.Lunch,
-			Genre:     genres[:],
+			Genre:     shop.Genre.Name,
+			SubGenre:  shop.SubGenre.Name,
 			Budget:    shop.Budget.Name,
 		}
 		shops = append(shops, shopDetail)

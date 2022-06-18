@@ -1,6 +1,7 @@
 package router
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/22hack12spring/backend/model"
@@ -41,12 +42,23 @@ func (h *Handlers) PostGourmetStart(c echo.Context) error {
 	// uuidの生成とデータベースへの登録
 	searches, err := h.Repo.CreateSearch(c.Request().Context(), arg)
 	if err != nil {
+		c.Logger().Error(err)
 		return err
 	}
 
 	// 質問の生成
-	questions, err := h.Service.GenerateQuestions(c.Request().Context(), arg, searches.ID)
+	questions, ids, err := h.Service.GenerateQuestions(c.Request().Context(), arg, searches.ID)
 	if err != nil {
+		c.Logger().Error(err)
+		return err
+	}
+	// 送った質問を保存
+	_, err = h.Repo.CreateQuestions(c.Request().Context(), model.QuestionArgs{
+		ShopIds:  ids,
+		SearchId: searches.ID,
+	})
+	if err != nil {
+		c.Logger().Error(err)
 		return err
 	}
 	return c.JSON(http.StatusOK, GourmetStartResponse{
@@ -63,7 +75,10 @@ func (h *Handlers) PostGourmetAnswer(c echo.Context) error {
 		return err
 	}
 	shop, err := h.Service.GenerateRecommend(c.Request().Context(), param.ID, param.Answers)
-	if err != nil {
+	if errors.Is(err, errors.New("API:No Shop Data")) {
+		return c.NoContent(http.StatusNotFound)
+	} else if err != nil {
+		c.Logger().Error(err)
 		return err
 	}
 	return c.JSON(http.StatusOK, GourmetAnswerResponse{

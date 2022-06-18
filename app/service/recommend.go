@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"log"
 	"math/rand"
 
@@ -9,19 +10,20 @@ import (
 )
 
 type ShopDetail struct {
-	Id        string   `json:"id"`
-	Name      string   `json:"name"`
-	LogoImage string   `json:"logo_image"`
-	Address   string   `json:"address"`
-	Lat       float64  `json:"lat"`
-	Lng       float64  `json:"lng"`
-	Genre     []string `json:"genre"`
-	Budget    string   `json:"budget"`
-	Open      string   `json:"open"`
-	Close     string   `json:"close"`
-	Url       string   `json:"url"`
-	Photo     string   `json:"photo"`
-	Lunch     string   `json:"lunch"`
+	Id        string  `json:"id"`
+	Name      string  `json:"name"`
+	LogoImage string  `json:"logoImage"`
+	Address   string  `json:"address"`
+	Lat       float64 `json:"lat"`
+	Lng       float64 `json:"lng"`
+	Genre     string  `json:"genre"`
+	SubGenre  string  `json:"subgenre"`
+	Budget    string  `json:"price"`
+	Open      string  `json:"open"`
+	Close     string  `json:"close"`
+	Url       string  `json:"url"`
+	Photo     string  `json:"photo"`
+	Lunch     string  `json:"lunch"`
 }
 
 type Answer struct {
@@ -46,6 +48,9 @@ func (s *Services) GenerateRecommend(ctx context.Context, uuid string, answers [
 	shops, err := s.GetGourmetsData(ctx, args)
 	if err != nil {
 		return nil, err
+	}
+	if shops == nil || len(shops) == 0 {
+		return nil, errors.New("API:No Shop Data")
 	}
 
 	// 予測値を計算する
@@ -84,6 +89,9 @@ func (s *Services) GenerateRecommend(ctx context.Context, uuid string, answers [
 		num = len(vec3s)
 	}
 	similarShops := FindSimilarVec3(vec3s, prediction, num)
+	if (similarShops == nil) || (len(similarShops) == 0) {
+		return nil, errors.New("API:No Shop Data")
+	}
 
 	result := rand.Intn(len(similarShops))
 	return similarShops[result].Shop, nil
