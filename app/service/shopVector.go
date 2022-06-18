@@ -127,5 +127,8 @@ func FindSimilarVec3(vec3s []ShopParams, vec3 [3]float64, num int) []ShopParams 
 	for _, v := range shopSimilarity {
 		res = append(res, v.Vec3)
 	}
+	if (res == nil) || (len(res) < num) {
+		return res
+	}
 	return res[:num]
 }

@@ -15,6 +15,7 @@ type Handlers struct {
 }
 
 func (h *Handlers) SetRouting(e *echo.Echo) error {
+	e.Use(middleware.Logger())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodOptions},
 	}))

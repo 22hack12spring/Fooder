@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"log"
 	"math/rand"
 
@@ -48,6 +49,9 @@ func (s *Services) GenerateRecommend(ctx context.Context, uuid string, answers [
 	if err != nil {
 		return nil, err
 	}
+	if shops == nil || len(shops) == 0 {
+		return nil, errors.New("API:No Shop Data")
+	}
 
 	// 予測値を計算する
 	prediction := [3]float64{}
@@ -85,6 +89,9 @@ func (s *Services) GenerateRecommend(ctx context.Context, uuid string, answers [
 		num = len(vec3s)
 	}
 	similarShops := FindSimilarVec3(vec3s, prediction, num)
+	if (similarShops == nil) || (len(similarShops) == 0) {
+		return nil, errors.New("API:No Shop Data")
+	}
 
 	result := rand.Intn(len(similarShops))
 	return similarShops[result].Shop, nil
