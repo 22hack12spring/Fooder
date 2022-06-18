@@ -31,6 +31,8 @@ func main() {
 	e.Validator = router.GetValidator()
 
 	repo := model.NewSqlxRepository(db)
+	repo.Initialize()
+	
 	services, err := service.NewServices(repo)
 	if err != nil {
 		panic(err)
