@@ -14,7 +14,7 @@ type ShopData struct {
 	Id       int    `json:"id"`
 	Image    string `json:"image"`
 	Genre    string `json:"genre"`
-	SubGenre string `json:"sub_genre"`
+	SubGenre string `json:"subgenre"`
 	Price    string `json:"price"`
 }
 
