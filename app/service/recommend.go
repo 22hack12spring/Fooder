@@ -9,6 +9,10 @@ import (
 	"github.com/22hack12spring/backend/model"
 )
 
+var (
+	ErrNoShopData = errors.New("API:No Shop Data")
+)
+
 type ShopDetail struct {
 	Id        string  `json:"id"`
 	Name      string  `json:"name"`
@@ -50,7 +54,7 @@ func (s *Services) GenerateRecommend(ctx context.Context, uuid string, answers [
 		return nil, err
 	}
 	if shops == nil || len(shops) == 0 {
-		return nil, errors.New("API:No Shop Data")
+		return nil, ErrNoShopData
 	}
 
 	// 予測値を計算する
@@ -90,15 +94,9 @@ func (s *Services) GenerateRecommend(ctx context.Context, uuid string, answers [
 	}
 	similarShops := FindSimilarVec3(vec3s, prediction, num)
 	if (similarShops == nil) || (len(similarShops) == 0) {
-		return nil, errors.New("API:No Shop Data")
+		return nil, ErrNoShopData
 	}
 
 	result := rand.Intn(len(similarShops))
 	return similarShops[result].Shop, nil
-}
-
-// 質問結果の値を計算する
-func (s *Services) AnswerShopVector(questions []model.Shops, answers []Answer) ([3]float64, error) {
-	// ナイーブな実装な気がするのでいい感じに修正してください
-	return [3]float64{0.7, 0.7, -0.5}, nil
 }

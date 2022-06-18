@@ -75,8 +75,9 @@ func (h *Handlers) PostGourmetAnswer(c echo.Context) error {
 		return err
 	}
 	shop, err := h.Service.GenerateRecommend(c.Request().Context(), param.ID, param.Answers)
-	if errors.Is(err, errors.New("API:No Shop Data")) {
-		return c.NoContent(http.StatusNotFound)
+	if errors.Is(err, service.ErrNoShopData) {
+		c.Logger().Error(err)
+		return errorNoShopData
 	} else if err != nil {
 		c.Logger().Error(err)
 		return err

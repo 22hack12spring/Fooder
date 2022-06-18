@@ -7,6 +7,7 @@ import (
 )
 
 var (
-	errorValidate = echo.NewHTTPError(http.StatusBadRequest, "Validation error")
-	errorBind     = echo.NewHTTPError(http.StatusBadRequest, "Bind error")
+	errorValidate   = echo.NewHTTPError(http.StatusBadRequest, "Validation error")
+	errorBind       = echo.NewHTTPError(http.StatusBadRequest, "Bind error")
+	errorNoShopData = echo.NewHTTPError(http.StatusNotFound, "No shop data")
 )
