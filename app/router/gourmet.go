@@ -45,7 +45,15 @@ func (h *Handlers) PostGourmetStart(c echo.Context) error {
 	}
 
 	// 質問の生成
-	questions, err := h.Service.GenerateQuestions(c.Request().Context(), arg, searches.ID)
+	questions, ids, err := h.Service.GenerateQuestions(c.Request().Context(), arg, searches.ID)
+	if err != nil {
+		return err
+	}
+	// 送った質問を保存
+	_, err = h.Repo.CreateQuestions(c.Request().Context(), model.QuestionArgs{
+		ShopIds:  ids,
+		SearchId: searches.ID,
+	})
 	if err != nil {
 		return err
 	}
