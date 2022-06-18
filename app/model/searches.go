@@ -52,7 +52,7 @@ func (repo *SqlxRepository) CreateSearch(c context.Context, arg SearchArgs) (Sea
 	if arg.Lng == nil {
 		lng.Float64, lng.Valid = 0, false
 	} else {
-		lng.Float64, lng.Valid = *arg.Lat, true
+		lng.Float64, lng.Valid = *arg.Lng, true
 	}
 
 	search := &Searches{
